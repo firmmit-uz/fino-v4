@@ -1,9 +1,35 @@
 {
-  "app": { "name": "FINO", "subtitle": "Strawberry Nutrient Solution System" },
-  "mode": { "select": "Select Growing Mode", "main": "Main Crop", "nursery": "Nursery", "main_desc": "Sep–May · S1–S4", "nursery_desc": "Jun–Aug · S0–S5-3" },
-  "nav": { "back": "Back", "print": "Print", "stages": "Stage List" },
-  "tank": { "a": "Tank A", "b": "Tank B", "c": "Tank C", "a_desc": "Calcium group", "b_desc": "Main fertilizers", "c_desc": "Acid (store separately)" },
-  "unit": { "kg": "kg", "ml": "mL", "l": "L", "mmol_l": "mmol/L", "ms_cm": "mS/cm" },
+  "app": {
+    "name": "FINO",
+    "subtitle": "Strawberry Nutrient Solution System"
+  },
+  "mode": {
+    "select": "Select Growing Mode",
+    "main": "Main Crop",
+    "nursery": "Nursery",
+    "main_desc": "Sep–May · S1–S4",
+    "nursery_desc": "Jun–Aug · S0–S5-3"
+  },
+  "nav": {
+    "back": "Back",
+    "print": "Print",
+    "stages": "Stage List"
+  },
+  "tank": {
+    "a": "Tank A",
+    "b": "Tank B",
+    "c": "Tank C",
+    "a_desc": "Calcium group",
+    "b_desc": "Main fertilizers",
+    "c_desc": "Acid (store separately)"
+  },
+  "unit": {
+    "kg": "kg",
+    "ml": "mL",
+    "l": "L",
+    "mmol_l": "mmol/L",
+    "ms_cm": "mS/cm"
+  },
   "label": {
     "ec_est": "EC estimate",
     "raw_water": "Raw water analysis",
@@ -18,14 +44,31 @@
     "reset_raw": "Restore defaults",
     "acid_dilution": "Concentrate 1:100 dilution required"
   },
-  "warning": { "no3_shortfall": "NO₃ deficit — high-HCO₃ water constraint", "ec_range": "EC out of range", "ca_fallback": "Ca fertilizer auto-switched", "ca_unavailable": "No Ca fertilizer — prescription blocked" },
+  "warning": {
+    "no3_shortfall": "NO₃ {{delta}} mmol/L below target — high-HCO₃ K ceiling",
+    "ec_out_of_range": "EC {{ec}} mS/cm out of range (0.5–3.5)",
+    "ca_fallback": "Ca source auto-switched: {{from}} → {{to}}",
+    "ca_unavailable": "No Ca fertilizer available — prescription blocked",
+    "raw_out_of_range": "Raw water {{field}} = {{value}} outside valid range [{{lo}}~{{hi}}], clamped"
+  },
   "fert": {
-    "agrogold155": "Agrogold CAN 15.5", "calcinit_yara": "Yara Calcium Nitrate",
-    "kno3": "Potassium Nitrate", "nh4no3": "Ammonium Nitrate",
-    "mgso4": "Magnesium Sulfate", "mg_no3_2": "Magnesium Nitrate",
-    "kh2po4": "Monopotassium Phosphate", "k2so4": "Potassium Sulfate",
-    "feEdta": "Fe-EDTA 13%", "feDtpa": "Fe-DTPA 11%", "feEddha": "Fe-EDDHA 6%",
-    "hno3": "Nitric Acid 68%", "h3po4": "Phosphoric Acid 85%",
-    "h3bo3": "Boric Acid", "znso4": "Zinc Sulfate", "mnso4": "Manganese Sulfate", "cuso4": "Copper Sulfate", "na2moo4": "Sodium Molybdate"
+    "agrogold155": "Agrogold CAN 15.5",
+    "calcinit_yara": "Yara Calcium Nitrate",
+    "kno3": "Potassium Nitrate",
+    "nh4no3": "Ammonium Nitrate",
+    "mgso4": "Magnesium Sulfate",
+    "mg_no3_2": "Magnesium Nitrate",
+    "kh2po4": "Monopotassium Phosphate",
+    "k2so4": "Potassium Sulfate",
+    "feEdta": "Fe-EDTA 13%",
+    "feDtpa": "Fe-DTPA 11%",
+    "feEddha": "Fe-EDDHA 6%",
+    "hno3": "Nitric Acid 68%",
+    "h3po4": "Phosphoric Acid 85%",
+    "h3bo3": "Boric Acid",
+    "znso4": "Zinc Sulfate",
+    "mnso4": "Manganese Sulfate",
+    "cuso4": "Copper Sulfate",
+    "na2moo4": "Sodium Molybdate"
   }
 }

@@ -9,17 +9,6 @@
   const stage   = $derived(stageId ? findStage('main', stageId) : undefined);
   const result  = $derived(stage ? calcPrescription(stage.target, DEFAULT_RAW, DEFAULT_OPTS) : null);
   const tanks   = $derived(result ? byTank(result.ferts) : null);
-
-  // Procedure steps — shown trilingual on printed worker card (intentional design)
-  const STEPS = [
-    { ko: '탱크에 깨끗한 물 60–70% 채우기',          uz: 'Idishga toza suv 60–70% quying',                ru: 'Заполнить бак водой 60–70%' },
-    { ko: 'B탱크 비료 순서대로 투입',                  uz: "B idishi o'g'itlarini soling",                  ru: 'Внести удобрения бака B' },
-    { ko: '교반 5분 — 완전 용해 확인',                 uz: '5 daqiqa aralashtiring',                         ru: 'Перемешивать 5 мин' },
-    { ko: 'A탱크 비료 순서대로 투입',                  uz: "A idishi o'g'itlarini soling",                  ru: 'Внести удобрения бака A' },
-    { ko: '교반 5분 추가',                             uz: 'Yana 5 daqiqa aralashtiring',                    ru: 'Ещё 5 мин перемешивания' },
-    { ko: 'C탱크 산을 별도 희석 후 천천히 첨가 ⚠',    uz: 'C kislotasini alohida suyultirib quying ⚠',     ru: 'Кислоту бака C разбавить, добавить медленно ⚠' },
-    { ko: 'EC·pH 측정 — 목표값 확인',                  uz: "EO va rH o'lchang",                              ru: 'Измерить ЭП и pH' },
-  ];
 </script>
 
 <svelte:head>
@@ -32,79 +21,89 @@
   {#if !stage || !result}
     <p>Stage not found</p>
   {:else}
-  <!-- Header -->
+  <!-- Header — no language duplication -->
   <div class="border-b-4 border-green-600 pb-4 mb-6">
     <div class="flex items-center justify-between">
       <div>
         <div class="text-3xl font-black tracking-wide text-green-700">FINO</div>
-        <div class="text-sm text-gray-500">{$t('mode.main')} · Main Crop · Asosiy ekin</div>
+        <div class="text-sm text-gray-500">{$t('mode.main')} · {stage.id} · {$t(stage.label, 'stages')}</div>
       </div>
       <div class="text-right">
-        <div class="text-xl font-bold">{stageId}</div>
         <div class="text-sm text-gray-600">EC {stage.ecMin}–{stage.ecMax} mS/cm</div>
         <div class="text-green-700 font-bold">EC est. {result.ec.toFixed(2)} mS/cm</div>
       </div>
     </div>
   </div>
 
-  <!-- Tank prescriptions — big text for field workers -->
+  <!-- Tank prescriptions -->
   <div class="grid grid-cols-3 gap-4 mb-8">
     {#each (['A','B','C'] as const) as tk}
-      {#if tanks && Object.keys(tanks[tk]).length > 0}
+      {#if tanks && tanks[tk].length > 0}
         <div class="border-2 {tk==='A'?'border-blue-500':tk==='B'?'border-green-500':'border-amber-500'} rounded-xl p-3">
-          <div class="text-center font-black text-2xl mb-2
+          <div class="text-center font-black text-xl mb-2
             {tk==='A'?'text-blue-700':tk==='B'?'text-green-700':'text-amber-700'}">
             {$t(`tank.${tk.toLowerCase()}`)}
           </div>
-          {#each Object.entries(tanks[tk]) as [id, amt]}
-            {#if amt && amt > 0}
-              <div class="flex justify-between items-baseline py-1 border-b border-gray-100">
-                <span class="text-xs text-gray-600 truncate">{$t(`fert.${id}`)}</span>
-                <span class="font-black text-lg ml-2">
-                  {#if id === 'hno3' || id === 'h3po4'}
-                    {amt.toFixed(0)} mL
-                  {:else}
-                    {amt < 1 ? (amt * 1000).toFixed(0) + 'g' : amt.toFixed(2) + 'kg'}
-                  {/if}
-                </span>
+          {#each tanks[tk] as item}
+            <div class="flex justify-between items-baseline py-1 border-b border-gray-100">
+              <div>
+                <div class="text-xs text-gray-700 leading-tight">{$t(`fert.${item.id}`)}</div>
+                <div class="text-xs text-gray-400 font-mono leading-tight">{item.formula}</div>
               </div>
-            {/if}
+              <span class="font-black text-lg ml-2 tabular-nums">
+                {item.unit === 'mL'
+                  ? item.amount.toFixed(0) + ' mL'
+                  : item.amount < 1
+                    ? (item.amount * 1000).toFixed(0) + 'g'
+                    : item.amount.toFixed(2) + 'kg'}
+              </span>
+            </div>
           {/each}
           {#if tk === 'C'}
-            <div class="mt-2 text-xs text-amber-700 font-bold">⚠ {$t('label.acid_dilution')}</div>
+            <!-- Safety box for acid tank -->
+            <div class="mt-2 p-2 bg-amber-50 border border-amber-400 rounded-lg text-xs text-amber-800 font-bold">
+              ⚠ {$t('label.acid_dilution')}
+            </div>
           {/if}
         </div>
       {/if}
     {/each}
   </div>
 
-  <!-- 7-step procedure — trilingual for field workers -->
+  <!-- 7-step procedure via i18n (current language) with safety highlight -->
   <div class="mb-6">
     <div class="text-lg font-bold mb-3 text-gray-800">{$t('proc.title', 'procedure')}</div>
-    <div class="space-y-3">
-      {#each STEPS as step, i}
-        <div class="flex gap-3 items-start">
-          <div class="w-8 h-8 rounded-full bg-green-600 text-white font-black text-sm flex items-center justify-center flex-shrink-0">{i+1}</div>
-          <div class="flex-1">
-            <div class="font-semibold text-sm">{step.ko}</div>
-            <div class="text-xs text-gray-500">{step.uz}</div>
-            <div class="text-xs text-gray-500">{step.ru}</div>
+    <div class="space-y-2">
+      {#each [1,2,3,4,5,6,7] as n}
+        <div class="flex gap-3 items-start {n === 6 ? 'bg-amber-50 border border-amber-300 rounded-lg p-2' : ''}">
+          <div class="w-7 h-7 rounded-full {n === 6 ? 'bg-amber-500' : 'bg-green-600'} text-white font-black text-sm flex items-center justify-center flex-shrink-0">{n}</div>
+          <div class="flex-1 {n === 6 ? 'font-bold text-amber-800' : 'text-sm'}">
+            {$t(`proc.step${n}`, 'procedure')}
           </div>
         </div>
       {/each}
     </div>
   </div>
 
-  <!-- Ion concentrations -->
+  <!-- Ion concentrations: computed (actual) vs target -->
   <div class="border border-gray-200 rounded-xl overflow-hidden">
     <div class="bg-gray-50 px-4 py-2 text-xs font-bold text-gray-600">
-      {$t('label.ions')} (mmol/L)
+      {$t('label.ions')} (mmol/L) — {$t('label.target')} / calc
     </div>
-    <div class="grid grid-cols-7 text-center">
-      {#each [['NO₃', result.ions.NO3], ['NH₄', result.ions.NH4], ['K', result.ions.K], ['Ca', result.ions.Ca], ['Mg', result.ions.Mg], ['H₂PO₄', result.ions.H2PO4], ['SO₄', result.ions.SO4]] as [ion, val]}
+    <div class="grid grid-cols-7 text-center text-xs">
+      {#each ([
+        ['NO₃', result.ions.NO3, stage.target.NO3],
+        ['NH₄', result.ions.NH4, stage.target.NH4],
+        ['K',   result.ions.K,   stage.target.K],
+        ['Ca',  result.ions.Ca,  stage.target.Ca],
+        ['Mg',  result.ions.Mg,  stage.target.Mg],
+        ['H₂PO₄', result.ions.H2PO4, stage.target.H2PO4],
+        ['SO₄', result.ions.SO4, stage.target.SO4],
+      ] as const) as [ion, calc, tgt]}
         <div class="py-2 border-r border-gray-100 last:border-0">
-          <div class="text-xs text-gray-400">{ion}</div>
-          <div class="font-bold">{(val as number).toFixed(1)}</div>
+          <div class="text-gray-400 text-xs">{ion}</div>
+          <div class="font-bold">{(calc as number).toFixed(1)}</div>
+          <div class="text-gray-400">({tgt})</div>
         </div>
       {/each}
     </div>

@@ -26,10 +26,10 @@ export type Lang = typeof SUPPORTED_LANGS[number];
 // Components use $t('key') — Svelte auto-subscribes, re-renders on lang change.
 export const langStore = writable<string>('uz-Cyrl');
 
-// t is a derived store: $t('key') or $t('key', 'stages')
+// t is a derived store: $t('key') | $t('key', 'stages') | $t('warning.x', 'common', { param: 'val' })
 export const t = derived(langStore, ($lang) =>
-  (key: string, ns = 'common'): string =>
-    i18next.t(key, { ns, lng: $lang }) as string
+  (key: string, ns = 'common', params?: Record<string, string>): string =>
+    i18next.t(key, { ns, lng: $lang, ...(params ?? {}) } as Record<string, unknown>) as string
 );
 
 let initialized = false;

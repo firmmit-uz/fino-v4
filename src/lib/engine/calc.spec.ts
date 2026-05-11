@@ -1,8 +1,13 @@
 import { describe, it, expect } from 'vitest';
-import { calcPrescription, clampRaw } from './calc.js';
+import { calcPrescription, clampRaw, byTank } from './calc.js';
 import { DEFAULT_RAW, DEFAULT_OPTS } from './defaults.js';
-import { STAGES_MAIN } from './stages.js';
+import { STAGES_MAIN, STAGES_NURSERY } from './stages.js';
 import { FERTILIZERS } from './fertilizers.js';
+import koCommon    from '../i18n/locales/ko/common.json';
+import uzCyrCommon from '../i18n/locales/uz-Cyrl/common.json';
+import uzLatCommon from '../i18n/locales/uz-Latn/common.json';
+import ruCommon    from '../i18n/locales/ru/common.json';
+import enCommon    from '../i18n/locales/en/common.json';
 
 const S1 = STAGES_MAIN[0]!; // S1 생육초기
 const S3 = STAGES_MAIN[2]!; // S3 착과비대
@@ -75,12 +80,12 @@ describe('FINO calc engine — golden tests', () => {
   // 7. NaN/음수 원수 → clampRaw로 0 복원
   it('T07: NaN and negative raw inputs are clamped to safe values', () => {
     const badRaw = { pH: NaN, EC: -5, NO3: -1, NH4: NaN, HCO3: -3, K: 0, Ca: 0, Mg: 0, H2PO4: 0, SO4: 0, Na: 0, Cl: 0 };
-    const clamped = clampRaw(badRaw);
-    expect(clamped.pH).toBe(0);
-    expect(clamped.EC).toBe(0);
-    expect(clamped.NO3).toBe(0);
-    expect(clamped.NH4).toBe(0);
-    expect(clamped.HCO3).toBe(0);
+    const { water } = clampRaw(badRaw);
+    expect(water.pH).toBe(3);   // clamped to lo=3
+    expect(water.EC).toBe(0);
+    expect(water.NO3).toBe(0);
+    expect(water.NH4).toBe(0);
+    expect(water.HCO3).toBe(0);
   });
 
   // 8. HCO3 중화로 C탱크에 HNO3 생성
@@ -115,6 +120,77 @@ describe('FINO calc engine — golden tests', () => {
     expect(DEFAULT_OPTS.feSource).toBe('feEddha');
     const result = calcPrescription(S1.target, DEFAULT_RAW, DEFAULT_OPTS);
     expect(result.ferts.feEddha).toBeGreaterThan(0);
+  });
+
+});
+
+// ── 5 New golden tests ─────────────────────────────────────────
+
+describe('FINO calc engine — extended golden tests', () => {
+
+  // T11: HNO3 fertilizer unit is 'mL'
+  it('T11: HNO3 and H3PO4 have unit mL; all solids have unit kg', () => {
+    expect(FERTILIZERS.hno3.unit).toBe('mL');
+    expect(FERTILIZERS.h3po4.unit).toBe('mL');
+    for (const [id, f] of Object.entries(FERTILIZERS)) {
+      if (id !== 'hno3' && id !== 'h3po4') {
+        expect(f.unit, `${id} should be kg`).toBe('kg');
+      }
+    }
+  });
+
+  // T12: each stage produces distinct prescription (data integrity)
+  it('T12: S1 K prescription differs from S2; S3 equals S4 (RDA 2018)', () => {
+    const kAmounts = STAGES_MAIN.map(s =>
+      calcPrescription(s.target, DEFAULT_RAW, DEFAULT_OPTS).ferts.kno3 ?? 0
+    );
+    expect(kAmounts[0]).not.toBeCloseTo(kAmounts[1], 1);   // S1 ≠ S2
+    expect(kAmounts[2]).toBeCloseTo(kAmounts[3]!, 2);       // S3 = S4
+  });
+
+  // T13: clampRaw rejects HCO3=999 and pH=-5
+  it('T13: clampRaw clamps HCO3=999 → 10, pH=-5 → 3, emits RAW_OUT_OF_RANGE warnings', () => {
+    const { water, warnings } = clampRaw({ ...DEFAULT_RAW as unknown as Record<string, unknown>, HCO3: 999, pH: -5 } as Parameters<typeof clampRaw>[0]);
+    expect(water.HCO3).toBe(10);
+    expect(water.pH).toBe(3);
+    const codes = warnings.map(w => w.code);
+    expect(codes).toContain('RAW_OUT_OF_RANGE');
+    expect(warnings.length).toBeGreaterThanOrEqual(2);
+  });
+
+  // T14: 5 languages all have required warning keys
+  it('T14: all 5 locales have warning keys with i18n param placeholders', () => {
+    const locales = [
+      { name: 'ko',      mod: koCommon },
+      { name: 'uz-Cyrl', mod: uzCyrCommon },
+      { name: 'uz-Latn', mod: uzLatCommon },
+      { name: 'ru',      mod: ruCommon },
+      { name: 'en',      mod: enCommon },
+    ];
+    const requiredWarnings = ['no3_shortfall', 'ec_out_of_range', 'ca_fallback', 'ca_unavailable', 'raw_out_of_range'];
+    for (const { name, mod } of locales) {
+      for (const wk of requiredWarnings) {
+        const val = (mod.warning as Record<string, string>)[wk];
+        expect(val, `${name}.warning.${wk} missing`).toBeTruthy();
+      }
+      const nf = (mod.warning as Record<string, string>).no3_shortfall;
+      expect(nf, `${name} no3_shortfall must have {{delta}}`).toContain('{{delta}}');
+    }
+  });
+
+  // T15: byTank TankItem array — hno3 has unit='mL', kno3 has unit='kg'
+  it('T15: byTank() returns TankItem[] with unit and formula fields', () => {
+    const rawHigh = { ...DEFAULT_RAW, HCO3: 4.0 };
+    const result = calcPrescription(S1.target, rawHigh, DEFAULT_OPTS);
+    const tanks = byTank(result.ferts);
+
+    const hno3Item = tanks.C.find(i => i.id === 'hno3');
+    expect(hno3Item, 'hno3 should be in Tank C').toBeDefined();
+    expect(hno3Item!.unit).toBe('mL');
+    expect(hno3Item!.formula).toContain('HNO₃');
+
+    const bKg = tanks.B.find(i => i.id === 'kno3' || i.id === 'k2so4');
+    if (bKg) expect(bKg.unit).toBe('kg');
   });
 
 });

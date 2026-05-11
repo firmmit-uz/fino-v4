@@ -21,6 +21,8 @@
     B: 'border-teal-500 bg-teal-950',
     C: 'border-amber-500 bg-amber-950',
   };
+
+  function warnKey(code: string) { return 'warning.' + code.toLowerCase(); }
 </script>
 
 {#if !stage}
@@ -37,9 +39,7 @@
     <div class="flex items-center justify-between">
       <div>
         <div class="text-2xl font-bold">{$t(stage.label, 'stages')}</div>
-        {#if stage.dates}
-          <div class="text-green-400 text-xs mt-0.5">{stage.dates} · {stage.days}</div>
-        {/if}
+        {#if stage.dates}<div class="text-green-400 text-xs mt-0.5">{stage.dates} · {stage.days}</div>{/if}
         <div class="text-green-300 text-sm">EC {stage.ecMin}–{stage.ecMax} {$t('unit.ms_cm')}</div>
       </div>
       <a href="/print/nursery/{stageId}" target="_blank"
@@ -60,37 +60,38 @@
         <div class="rounded-xl p-3 text-sm font-semibold
           {w.level === 'P0' ? 'bg-red-950 border border-red-700 text-red-300'
           : 'bg-amber-950 border border-amber-700 text-amber-300'}">
-          ⚠ [{w.level}] {w.detail ?? w.code}
+          ⚠ [{w.level}] {$t(warnKey(w.code), 'common', w.params)}
         </div>
       {/each}
 
       {#each (['A','B','C'] as const) as tk}
-        {#if tanks && Object.keys(tanks[tk]).length > 0}
+        {#if tanks && tanks[tk].length > 0}
           <div class="rounded-xl border {TANK_COLORS[tk]} overflow-hidden">
             <div class="px-4 py-3 font-bold text-sm flex items-center gap-2 border-b border-white/10">
               <span class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center font-black">{tk}</span>
               <span>{$t(`tank.${tk.toLowerCase()}`)}</span>
               {#if tk === 'C'}<span class="ml-auto text-amber-300 text-xs font-bold">⚠ {$t('label.acid_dilution')}</span>{/if}
             </div>
-            {#each Object.entries(tanks[tk]) as [id, amount]}
-              {#if amount && amount > 0}
-                <div class="px-4 py-3 border-b border-white/5 flex items-center justify-between">
-                  <span class="text-sm text-slate-200">{$t(`fert.${id}`)}</span>
-                  <span class="font-bold text-white">
-                    {#if id === 'hno3' || id === 'h3po4'}
-                      {amount.toFixed(0)} {$t('unit.ml')}
-                    {:else}
-                      {amount < 1 ? (amount * 1000).toFixed(0) + ' g' : amount.toFixed(2) + ' ' + $t('unit.kg')}
-                    {/if}
-                  </span>
+            {#each tanks[tk] as item}
+              <div class="px-4 py-3 border-b border-white/5 flex items-center justify-between">
+                <div class="min-w-0">
+                  <div class="text-sm text-slate-200">{$t(`fert.${item.id}`)}</div>
+                  <div class="text-xs text-slate-500 font-mono">{item.formula}</div>
                 </div>
-              {/if}
+                <span class="font-bold text-white ml-4 tabular-nums">
+                  {item.unit === 'mL'
+                    ? item.amount.toFixed(0) + ' ' + $t('unit.ml')
+                    : item.amount < 1
+                      ? (item.amount * 1000).toFixed(0) + ' g'
+                      : item.amount.toFixed(2) + ' ' + $t('unit.kg')}
+                </span>
+              </div>
             {/each}
           </div>
         {/if}
       {/each}
 
-      <!-- Ion table -->
+      <!-- Ion table: computed vs target -->
       <details class="bg-slate-800 rounded-xl overflow-hidden">
         <summary class="px-4 py-3 text-sm font-semibold text-slate-300 cursor-pointer">
           {$t('label.ions')} ({$t('unit.mmol_l')})
@@ -104,10 +105,10 @@
             ['Mg',  result.ions.Mg,    stage.target.Mg],
             ['H₂PO₄', result.ions.H2PO4, stage.target.H2PO4],
             ['SO₄', result.ions.SO4,   stage.target.SO4],
-          ] as const) as [ion, val, tgt]}
+          ] as const) as [ion, calc, tgt]}
             <div class="bg-slate-700 rounded-lg p-2 text-center">
               <div class="text-slate-400">{ion}</div>
-              <div class="font-bold text-white">{(val as number).toFixed(2)}</div>
+              <div class="font-bold text-white">{(calc as number).toFixed(2)}</div>
               <div class="text-slate-500">{$t('label.target')}: {tgt}</div>
             </div>
           {/each}
@@ -115,7 +116,6 @@
       </details>
     {/if}
 
-    <!-- Raw water edit -->
     <details bind:open={showRawEdit} class="bg-slate-800 rounded-xl overflow-hidden">
       <summary class="px-4 py-3 text-sm font-semibold text-slate-300 cursor-pointer">
         {$t('label.edit_raw')}
@@ -124,8 +124,7 @@
         {#each (['pH','EC','NO3','NH4','K','Ca','Mg','H2PO4','SO4','HCO3','Na','Cl'] as const) as key}
           <label class="flex flex-col gap-1">
             <span class="text-xs text-slate-400">{key}</span>
-            <input type="number" step="0.1" min="0"
-              bind:value={raw[key]}
+            <input type="number" step="0.1" min="0" bind:value={raw[key]}
               class="bg-slate-700 border border-slate-600 rounded-lg px-3 py-1.5 text-sm text-white w-full" />
           </label>
         {/each}

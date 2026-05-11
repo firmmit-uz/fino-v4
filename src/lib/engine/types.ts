@@ -71,7 +71,9 @@ export interface Fertilizer {
   id: FertId;
   tank: 'A' | 'B' | 'C';
   isLiquid: boolean;
-  // mmol of ion per gram solid, or mmol per mL liquid
+  unit: 'kg' | 'mL';   // output unit for display
+  formula: string;       // chemical formula for display (e.g. "KNO₃")
+  // mmol per gram (solids) or mmol per mL (liquids)
   NO3: number;
   NH4: number;
   K: number;
@@ -87,11 +89,20 @@ export interface Fertilizer {
   Mo: number;
 }
 
-export type FertAmounts = Partial<Record<FertId, number>>; // kg or mL
+// FertAmounts: stores kg for solids, mL for liquids (see Fertilizer.unit)
+export type FertAmounts = Partial<Record<FertId, number>>;
+
+// TankItem: enriched fert row for display
+export interface TankItem {
+  id: FertId;
+  amount: number;
+  unit: 'kg' | 'mL';
+  formula: string;
+}
 
 export interface PrescriptionResult {
   ferts: FertAmounts;
-  ions: RawWater;        // final ion concentrations
+  ions: RawWater;        // final ion concentrations (mmol/L)
   ec: number;            // estimated EC (mS/cm)
   warnings: Warning[];
 }
@@ -99,5 +110,5 @@ export interface PrescriptionResult {
 export interface Warning {
   level: 'P0' | 'P1' | 'P2' | 'P3';
   code: string;
-  detail?: string;
+  params?: Record<string, string>; // i18n interpolation params
 }

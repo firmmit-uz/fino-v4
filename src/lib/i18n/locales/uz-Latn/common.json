@@ -1,9 +1,35 @@
 {
-  "app": { "name": "FINO", "subtitle": "Qulupnay uchun ozuqa eritmasi tizimi" },
-  "mode": { "select": "O'stirish rejimini tanlang", "main": "Asosiy ekin", "nursery": "Ko'chat xonasi", "main_desc": "Sentabr–May · S1–S4", "nursery_desc": "Iyun–Avgust · S0–S5-3" },
-  "nav": { "back": "Orqaga", "print": "Chop etish", "stages": "Bosqichlar ro'yxati" },
-  "tank": { "a": "A idishi", "b": "B idishi", "c": "C idishi", "a_desc": "Kaltsiy guruhi", "b_desc": "Asosiy o'g'itlar", "c_desc": "Kislota (alohida saqlanadi)" },
-  "unit": { "kg": "kg", "ml": "mL", "l": "L", "mmol_l": "mmol/L", "ms_cm": "mSm/sm" },
+  "app": {
+    "name": "FINO",
+    "subtitle": "Qulupnay uchun ozuqa eritmasi tizimi"
+  },
+  "mode": {
+    "select": "O'stirish rejimini tanlang",
+    "main": "Asosiy ekin",
+    "nursery": "Ko'chat xonasi",
+    "main_desc": "Sentabr–May · S1–S4",
+    "nursery_desc": "Iyun–Avgust · S0–S5-3"
+  },
+  "nav": {
+    "back": "Orqaga",
+    "print": "Chop etish",
+    "stages": "Bosqichlar ro'yxati"
+  },
+  "tank": {
+    "a": "A idishi",
+    "b": "B idishi",
+    "c": "C idishi",
+    "a_desc": "Kaltsiy guruhi",
+    "b_desc": "Asosiy o'g'itlar",
+    "c_desc": "Kislota (alohida saqlanadi)"
+  },
+  "unit": {
+    "kg": "kg",
+    "ml": "mL",
+    "l": "L",
+    "mmol_l": "mmol/L",
+    "ms_cm": "mSm/sm"
+  },
   "label": {
     "ec_est": "EO bahosi",
     "raw_water": "Xom suv tahlili",
@@ -18,14 +44,31 @@
     "reset_raw": "Asosiyga qaytarish",
     "acid_dilution": "Eritma 1:100 suyultirish shart"
   },
-  "warning": { "no3_shortfall": "NO₃ kamligi — yuqori HCO₃ suv xususiyati", "ec_range": "EO diapazondan chiqdi", "ca_fallback": "Ca o'g'iti avtomatik almashtirildi", "ca_unavailable": "Ca o'g'iti yo'q — retsept tayyorlanmadi" },
+  "warning": {
+    "no3_shortfall": "NO₃ {{delta}} mmol/L kamligi — yuqori HCO₃ K chegarasi",
+    "ec_out_of_range": "EO {{ec}} mSm/sm diapazondan chiqdi (0.5–3.5)",
+    "ca_fallback": "Ca o'g'iti avtomatik almashtirildi: {{from}} → {{to}}",
+    "ca_unavailable": "Ca o'g'iti yo'q — retsept tayyorlanmadi",
+    "raw_out_of_range": "Xom suv {{field}} = {{value}} ruxsat diapazonidan [{{lo}}~{{hi}}] chiqdi, tuzatildi"
+  },
   "fert": {
-    "agrogold155": "Agrogold CAN 15.5", "calcinit_yara": "Yara Kalsiy nitrati",
-    "kno3": "Kaliy nitrati", "nh4no3": "Ammoniy nitrati",
-    "mgso4": "Magniy sulfati", "mg_no3_2": "Magniy nitrati",
-    "kh2po4": "Kaliy monofosfati", "k2so4": "Kaliy sulfati",
-    "feEdta": "Fe-EDTA 13%", "feDtpa": "Fe-DTPA 11%", "feEddha": "Fe-EDDHA 6%",
-    "hno3": "Azot kislotasi 68%", "h3po4": "Fosfor kislotasi 85%",
-    "h3bo3": "Bor kislotasi", "znso4": "Rux sulfati", "mnso4": "Marganets sulfati", "cuso4": "Mis sulfati", "na2moo4": "Natriy molibdati"
+    "agrogold155": "Agrogold CAN 15.5",
+    "calcinit_yara": "Yara Kalsiy nitrati",
+    "kno3": "Kaliy nitrati",
+    "nh4no3": "Ammoniy nitrati",
+    "mgso4": "Magniy sulfati",
+    "mg_no3_2": "Magniy nitrati",
+    "kh2po4": "Kaliy monofosfati",
+    "k2so4": "Kaliy sulfati",
+    "feEdta": "Fe-EDTA 13%",
+    "feDtpa": "Fe-DTPA 11%",
+    "feEddha": "Fe-EDDHA 6%",
+    "hno3": "Azot kislotasi 68%",
+    "h3po4": "Fosfor kislotasi 85%",
+    "h3bo3": "Bor kislotasi",
+    "znso4": "Rux sulfati",
+    "mnso4": "Marganets sulfati",
+    "cuso4": "Mis sulfati",
+    "na2moo4": "Natriy molibdati"
   }
 }

@@ -19,11 +19,13 @@ export const STAGES_MAIN: Stage[] = [
   {
     id: 'S3', label: 'stage.main.s3', mode: 'main',
     ecMin: 1.2, ecMax: 1.4,
+    // S3·S4 targets are identical — RDA 2018 Korea standard (strawberry fruiting/harvest)
     target: { NO3: 12.0, NH4: 0.5, K: 6.0, Ca: 4.0, Mg: 1.5, H2PO4: 1.0, SO4: 1.5, ...STD_MICRO },
   },
   {
     id: 'S4', label: 'stage.main.s4', mode: 'main',
     ecMin: 1.3, ecMax: 1.6,
+    // S3·S4 targets are identical — RDA 2018 Korea standard (strawberry fruiting/harvest)
     target: { NO3: 12.0, NH4: 0.5, K: 6.0, Ca: 4.0, Mg: 1.5, H2PO4: 1.0, SO4: 1.5, ...STD_MICRO },
   },
 ];
@@ -58,11 +60,13 @@ export const STAGES_NURSERY: Stage[] = [
   {
     id: 'S5-1', label: 'stage.nursery.s5_1', mode: 'nursery',
     ecMin: 1.4, ecMax: 1.7, dates: '8/16~8/22', days: '7일',
+    // S5-1·S5-2 targets identical — gradual hardening per FIRMMIT protocol v2.14
     target: { NO3: 11.0, NH4: 0.5, K: 5.5, Ca: 3.8, Mg: 1.3, H2PO4: 1.0, SO4: 1.3, ...STD_MICRO },
   },
   {
     id: 'S5-2', label: 'stage.nursery.s5_2', mode: 'nursery',
     ecMin: 1.4, ecMax: 1.7, dates: '8/23~8/27', days: '5일',
+    // S5-1·S5-2 targets identical — gradual hardening per FIRMMIT protocol v2.14
     target: { NO3: 11.0, NH4: 0.5, K: 5.5, Ca: 3.8, Mg: 1.3, H2PO4: 1.0, SO4: 1.3, ...STD_MICRO },
   },
   {
