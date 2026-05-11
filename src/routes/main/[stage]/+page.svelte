@@ -75,7 +75,7 @@
             <div class="px-4 py-3 font-bold text-sm flex items-center gap-2 border-b border-white/10">
               <span class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center font-black">{TANK_LABEL[tk]}</span>
               <span>{t(`tank.${tk.toLowerCase()}`)}</span>
-              {#if tk === 'C'}<span class="ml-auto text-amber-300 text-xs font-bold">⚠ 원액 1:100 희석</span>{/if}
+              {#if tk === 'C'}<span class="ml-auto text-amber-300 text-xs font-bold">⚠ {t('label.acid_dilution')}</span>{/if}
             </div>
             {#each Object.entries(tanks[tk]) as [id, amount]}
               {#if amount && amount > 0}
@@ -94,7 +94,7 @@
 
       <!-- Ion table -->
       <details class="bg-slate-800 rounded-xl overflow-hidden">
-        <summary class="px-4 py-3 text-sm font-semibold text-slate-300 cursor-pointer">이온 농도 (mmol/L)</summary>
+        <summary class="px-4 py-3 text-sm font-semibold text-slate-300 cursor-pointer">{t('label.ions')} ({t('unit.mmol_l')})</summary>
         <div class="px-4 pb-4 grid grid-cols-3 gap-2 text-xs">
           {#each ([['NO₃', result.ions.NO3, stage.target.NO3], ['NH₄', result.ions.NH4, stage.target.NH4], ['K', result.ions.K, stage.target.K], ['Ca', result.ions.Ca, stage.target.Ca], ['Mg', result.ions.Mg, stage.target.Mg], ['H₂PO₄', result.ions.H2PO4, stage.target.H2PO4], ['SO₄', result.ions.SO4, stage.target.SO4]] as const) as [ion, val, tgt]}
             <div class="bg-slate-700 rounded-lg p-2 text-center">
@@ -121,7 +121,7 @@
         {/each}
         <button onclick={() => { raw = { ...DEFAULT_RAW }; }}
           class="col-span-2 mt-1 py-2 rounded-lg bg-slate-700 text-slate-300 text-sm font-semibold">
-          기본값 복원
+          {t('label.reset_raw')}
         </button>
       </div>
     </details>

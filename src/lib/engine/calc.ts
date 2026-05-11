@@ -1,5 +1,5 @@
 import type { RawWater, TargetIons, CalcOptions, PrescriptionResult, FertAmounts, Warning } from './types.js';
-import { FERTILIZERS } from './fertilizers.js';
+import { FERTILIZERS as FERT } from './fertilizers.js';
 import { EC_F } from './defaults.js';
 
 // ── P0 Safety: clamp raw water values ────────────────────────
@@ -7,8 +7,8 @@ export function clampRaw(raw: Partial<RawWater>): RawWater {
   const safe = (v: unknown, lo = 0, hi = 1e9) =>
     typeof v === 'number' && isFinite(v) ? Math.max(lo, Math.min(hi, v)) : 0;
   return {
-    pH:    safe(raw.pH,    4, 9),
-    EC:    safe(raw.EC,    0, 20),
+    pH:    safe(raw.pH, 4, 9),
+    EC:    safe(raw.EC, 0, 20),
     NO3:   safe(raw.NO3),
     NH4:   safe(raw.NH4),
     K:     safe(raw.K),
@@ -22,140 +22,132 @@ export function clampRaw(raw: Partial<RawWater>): RawWater {
   };
 }
 
-// helper: grams→mmol/L contribution of ion from fertilizer
-const contrib = (grams: number, mmolPerG: number, F: number) =>
-  (grams * mmolPerG) / F;
-
-// ── v2.14 calculation engine ─────────────────────────────────
+// ── v2.14 calc engine ────────────────────────────────────────
+// Convention:
+//   xKg   = g per L of FINAL solution  (= need_mmol_L / FERT.x.ion  [mmol/g])
+//   pool  = ion totals in FINAL solution (mmol/L), accumulated each step
+//   ferts = xKg * F / 1000  → actual kg (or mL) per concentrate tank
 export function calcPrescription(
   tg: TargetIons,
   rawInput: Partial<RawWater>,
   opts: CalcOptions,
 ): PrescriptionResult {
-  const raw = clampRaw(rawInput);
+  const raw  = clampRaw(rawInput);
   const warnings: Warning[] = [];
-  const ferts: FertAmounts = {};
+  const ferts: FertAmounts  = {};
 
-  // F = concentrate × dilution (e.g. 600L × 100 = 60 000)
+  // F = tankVol × dilution  (e.g. 600 L × 100 = 60 000)
   const F = opts.tankVol * opts.dilution;
 
-  // pool = running ion concentrations in FINAL solution (mmol/L)
+  // pool starts from raw water ions (mmol/L of final solution)
   const pool: RawWater = { ...raw };
 
   // ── Step 1: HCO₃ neutralisation → HNO₃ (Tank C) ─────────────
   const hco3N = Math.max(0, pool.HCO3 - opts.residualHCO3);
   if (hco3N > 0.01) {
-    const mL = (hco3N * F) / FERTILIZERS.hno3.NO3;
-    ferts.hno3 = mL;
-    pool.NO3  += hco3N;
-    pool.HCO3  = opts.residualHCO3;
+    const hno3Kg = hco3N / FERT.hno3.NO3;          // mL/L (liquid)
+    ferts.hno3   = hno3Kg * F;                       // total mL per tank
+    pool.NO3    += hno3Kg * FERT.hno3.NO3;           // = hco3N
+    pool.HCO3    = opts.residualHCO3;
   }
 
   // ── Step 2: Ca source (Tank A) ───────────────────────────────
   const caN = Math.max(0, tg.Ca - pool.Ca);
   if (caN > 0.01) {
     const avail = opts.available ?? {};
-    const pri = opts.calcinit;
+    const pri   = opts.calcinit;
     const alt: typeof pri = pri === 'agrogold155' ? 'calcinit_yara' : 'agrogold155';
-    const src = avail[pri] !== false ? pri
-               : avail[alt] !== false ? alt
-               : null;
+    const src   = avail[pri] !== false ? pri
+                : avail[alt] !== false ? alt
+                : null;
 
     if (!src) {
       warnings.push({ level: 'P0', code: 'CA_UNAVAILABLE', detail: 'No Ca fertilizer — prescription blocked' });
       return { ferts, ions: pool, ec: 0, warnings };
     }
-    if (src !== pri) {
-      warnings.push({ level: 'P1', code: 'CA_FALLBACK', detail: `Auto-switched ${pri} → ${src}` });
-    }
-    const f = FERTILIZERS[src];
-    const caKg = (caN * F) / (f.Ca * 1000);
-    ferts[src]  = caKg;
-    pool.Ca    += contrib(caKg * 1000, f.Ca,  F); // = caN
-    pool.NO3   += contrib(caKg * 1000, f.NO3, F);
-    pool.NH4   += contrib(caKg * 1000, f.NH4, F);
+    if (src !== pri) warnings.push({ level: 'P1', code: 'CA_FALLBACK', detail: `Auto-switched ${pri} → ${src}` });
+
+    const f     = FERT[src];
+    const caKg  = caN / f.Ca;                         // g/L
+    ferts[src]  = caKg * F / 1000;                    // kg/tank
+    pool.Ca    += caKg * f.Ca;                         // = caN
+    pool.NO3   += caKg * f.NO3;
+    pool.NH4   += caKg * f.NH4;
   }
 
   // ── Step 3: Fe chelate (Tank A) ──────────────────────────────
-  const feN = tg.Fe_umol / 1000; // µmol → mmol
+  const feN = tg.Fe_umol / 1000;                      // µmol → mmol/L
   if (feN > 0) {
-    const f = FERTILIZERS[opts.feSource];
-    const feKg = (feN * F) / (f.Fe * 1000);
-    ferts[opts.feSource] = feKg;
-    // Fe doesn't affect macro pool
+    const f      = FERT[opts.feSource];
+    const feKg   = feN / f.Fe;
+    ferts[opts.feSource] = feKg * F / 1000;
+    // Fe does not enter macro pool
   }
 
   // ── Step 4: NH₄ balance → NH₄NO₃ (Tank A) ───────────────────
-  // Done early so pool.NH4 is accurate before K step
+  // Placed before Step 5 so pool.NH4 is accurate for K step
   const nh4N = Math.max(0, tg.NH4 - pool.NH4);
   if (nh4N > 0.01) {
-    const f = FERTILIZERS.nh4no3;
-    const nh4Kg = (nh4N * F) / (f.NH4 * 1000);
-    ferts.nh4no3 = nh4Kg;
-    pool.NH4 += contrib(nh4Kg * 1000, f.NH4, F); // = nh4N
-    pool.NO3 += contrib(nh4Kg * 1000, f.NO3, F); // NH₄NO₃ also adds NO₃
+    const nh4Kg  = nh4N / FERT.nh4no3.NH4;
+    ferts.nh4no3 = nh4Kg * F / 1000;
+    pool.NH4    += nh4Kg * FERT.nh4no3.NH4;           // = nh4N
+    pool.NO3    += nh4Kg * FERT.nh4no3.NO3;           // NH₄NO₃ also adds NO₃
   }
 
   // ── Step 5: P → KH₂PO₄ (Tank B) ─────────────────────────────
-  const pN = Math.max(0, tg.H2PO4 - pool.H2PO4);
+  const pN   = Math.max(0, tg.H2PO4 - pool.H2PO4);
   if (pN > 0.01) {
-    const f = FERTILIZERS.kh2po4;
-    const kh2Kg = (pN * F) / (f.H2PO4 * 1000);
-    ferts.kh2po4  = kh2Kg;
-    pool.H2PO4   += contrib(kh2Kg * 1000, f.H2PO4, F); // = pN
-    pool.K        += contrib(kh2Kg * 1000, f.K,     F); // ★ K goes into pool
+    const kh2Kg  = pN / FERT.kh2po4.H2PO4;
+    ferts.kh2po4 = kh2Kg * F / 1000;
+    pool.H2PO4  += kh2Kg * FERT.kh2po4.H2PO4;        // = pN
+    pool.K      += kh2Kg * FERT.kh2po4.K;             // ★ K 풀에 누적
   }
 
   // ── Step 6: Mg → MgSO₄ or Mg(NO₃)₂ (Tank B) ────────────────
   const mgN = Math.max(0, tg.Mg - pool.Mg);
   if (mgN > 0.01) {
-    const f = FERTILIZERS[opts.mgSource];
-    const mgKg = (mgN * F) / (f.Mg * 1000);
-    ferts[opts.mgSource] = mgKg;
-    pool.Mg  += contrib(mgKg * 1000, f.Mg,  F); // = mgN
-    pool.SO4 += contrib(mgKg * 1000, f.SO4, F); // ★ SO₄ goes into pool
-    pool.NO3 += contrib(mgKg * 1000, f.NO3, F);
+    const f    = FERT[opts.mgSource];
+    const mgKg = mgN / f.Mg;
+    ferts[opts.mgSource] = mgKg * F / 1000;
+    pool.Mg   += mgKg * f.Mg;                          // = mgN
+    pool.SO4  += mgKg * f.SO4;                         // ★ SO₄ 풀에 누적
+    pool.NO3  += mgKg * f.NO3;                         // mg_no3_2 경우만 0 아님
   }
 
-  // ── Step 7: K balance — K₂SO₄ first (for SO₄), then KNO₃ ────
-  // pool.K already includes K from KH₂PO₄ (Step 5)
-  let kN = Math.max(0, tg.K - pool.K);
+  // ── Step 7: K 균형 — K₂SO₄ (SO₄ 먼저), 그 다음 KNO₃ ─────────
+  // pool.K에는 Step 5의 KH₂PO₄ 기여분이 이미 포함돼 있음
+  let kN = Math.max(0, tg.K - pool.K);                 // ★ 풀에서 차감 후 부족분만
 
-  // K₂SO₄ satisfies both SO₄ and K deficits simultaneously
   const so4Need = Math.max(0, tg.SO4 - pool.SO4);
   if (so4Need > 0 && kN > 0.01) {
-    const f = FERTILIZERS.k2so4;
-    let k2so4Kg = so4Need / (f.SO4 / F * 1000);
-    // = (so4Need * F) / (f.SO4 * 1000) but limit by K budget
-    k2so4Kg = (so4Need * F) / (f.SO4 * 1000);
-    let kFromK2 = contrib(k2so4Kg * 1000, f.K, F);
-    if (kFromK2 > kN) {
-      k2so4Kg = (kN * F) / (f.K * 1000); // cap to K need
-      kFromK2  = kN;
+    let k2so4Kg = so4Need / FERT.k2so4.SO4;
+    let k2k     = k2so4Kg * FERT.k2so4.K;
+    if (k2k > kN) {                                    // K 예산 초과 시 캡
+      k2so4Kg = kN / FERT.k2so4.K;
+      k2k     = k2so4Kg * FERT.k2so4.K;
     }
-    ferts.k2so4  = k2so4Kg;
-    pool.K       += kFromK2;
-    pool.SO4     += contrib(k2so4Kg * 1000, f.SO4, F);
-    kN            = Math.max(0, kN - kFromK2);
+    ferts.k2so4  = k2so4Kg * F / 1000;
+    pool.K      += k2k;
+    pool.SO4    += k2so4Kg * FERT.k2so4.SO4;
+    kN           = Math.max(0, kN - k2k);
   }
 
-  // KNO₃ for all remaining K (also adds NO₃ to pool)
+  // 나머지 K 전량 KNO₃로 공급 (NO₃도 풀에 누적)
   if (kN > 0.01) {
-    const f = FERTILIZERS.kno3;
-    const kno3Kg = (kN * F) / (f.K * 1000);
-    ferts.kno3  = (ferts.kno3 ?? 0) + kno3Kg;
-    pool.K      += contrib(kno3Kg * 1000, f.K,   F); // = kN
-    pool.NO3    += contrib(kno3Kg * 1000, f.NO3, F);
+    const kno3Kg = kN / FERT.kno3.K;
+    ferts.kno3   = (ferts.kno3 ?? 0) + kno3Kg * F / 1000;
+    pool.K      += kno3Kg * FERT.kno3.K;               // = kN
+    pool.NO3    += kno3Kg * FERT.kno3.NO3;             // = kN (KNO₃ 1:1)
   }
 
-  // ── Step 8: Optional phosphite H₃PO₃ (Tank B) ────────────────
+  // ── Step 8: Optional H₃PO₃ phosphite (Tank B) ───────────────
   if (opts.addPhosphite) {
-    const ph3n = 0.5;
-    const f = FERTILIZERS.h3po3;
-    ferts.h3po3 = (ph3n * F) / (f.H2PO4 * 1000);
+    const ph3n    = 0.5;
+    const ph3Kg   = ph3n / FERT.h3po3.H2PO4;
+    ferts.h3po3   = ph3Kg * F / 1000;
   }
 
-  // ── Step 9: NO₃ shortfall check (P3 guard) ───────────────────
+  // ── Step 9: NO₃ shortfall guard (P3) ─────────────────────────
   const no3Delta = tg.NO3 - pool.NO3;
   if (no3Delta > 1.5) {
     warnings.push({
@@ -172,14 +164,17 @@ export function calcPrescription(
     ['cuso4',   tg.Cu_umol / 1000, 'Cu'],
     ['na2moo4', tg.Mo_umol / 1000, 'Mo'],
   ];
-  for (const [id, mmol, key] of micros) {
-    if (mmol > 0) {
-      const rate = (FERTILIZERS[id] as unknown as Record<string, number>)[key] as number;
-      if (rate > 0) ferts[id] = (mmol * F) / (rate * 1000);
+  for (const [id, need, key] of micros) {
+    if (need > 0) {
+      const rate = (FERT[id] as unknown as Record<string, number>)[key] as number;
+      if (rate > 0) {
+        const xKg = need / rate;
+        ferts[id] = xKg * F / 1000;
+      }
     }
   }
 
-  // ── EC estimation (Sonneveld 2009, v2.5 coefficients) ────────
+  // ── EC 추정 (Sonneveld 2009, v2.5) ───────────────────────────
   const ec =
     pool.NO3   * EC_F.NO3   +
     pool.NH4   * EC_F.NH4   +
@@ -203,7 +198,7 @@ export function byTank(ferts: FertAmounts): Record<'A' | 'B' | 'C', FertAmounts>
   const out: Record<'A' | 'B' | 'C', FertAmounts> = { A: {}, B: {}, C: {} };
   for (const [id, amt] of Object.entries(ferts)) {
     if (!amt || amt <= 0) continue;
-    const tank = FERTILIZERS[id as keyof typeof FERTILIZERS]?.tank ?? 'B';
+    const tank = FERT[id as keyof typeof FERT]?.tank ?? 'B';
     out[tank][id as keyof FertAmounts] = amt;
   }
   return out;
