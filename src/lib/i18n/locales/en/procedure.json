@@ -1,0 +1,12 @@
+{
+  "proc": {
+    "title": "Preparation Procedure (7 Steps)",
+    "step1": "Fill tank with clean water to 60–70% of target volume",
+    "step2": "Add Tank B fertilizers sequentially (KNO₃, KH₂PO₄, MgSO₄, micronutrients)",
+    "step3": "Mix for 5 minutes until fully dissolved",
+    "step4": "Add Tank A fertilizers sequentially (Ca, Fe chelate, NH₄NO₃)",
+    "step5": "Mix for an additional 5 minutes",
+    "step6": "Pre-dilute Tank C acid (HNO₃) in a separate container, then add slowly ⚠ Never add concentrate directly",
+    "step7": "Measure EC and pH, verify against target values. Check 1:100 dilution ratio"
+  }
+}

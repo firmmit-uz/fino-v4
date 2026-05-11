@@ -1,0 +1,6 @@
+{
+  "stage": {
+    "main": { "s1": "S1 · Early Growth", "s2": "S2 · Flowering", "s3": "S3 · Fruit Development", "s4": "S4 · Harvest" },
+    "nursery": { "s0": "S0 · Rooting Adaptation", "s1": "S1 · Mother Plant", "s2": "S2 · Mother+Runners", "s3": "S3 · Runner Separation", "s4": "S4 · Transplant Growth", "s5_1": "S5-1 · Pre-shipment 1", "s5_2": "S5-2 · Pre-shipment 2", "s5_3": "S5-3 · Final Hardening" }
+  }
+}

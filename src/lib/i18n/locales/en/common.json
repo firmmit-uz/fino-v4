@@ -1,0 +1,12 @@
+{
+  "app": { "name": "FINO", "subtitle": "Strawberry Nutrient Solution System" },
+  "mode": { "select": "Select Growing Mode", "main": "Main Crop", "nursery": "Nursery", "main_desc": "Sep–May · S1–S4", "nursery_desc": "Jun–Aug · S0–S5-3" },
+  "nav": { "back": "Back", "print": "Print", "stages": "Stage List" },
+  "tank": { "a": "Tank A", "b": "Tank B", "c": "Tank C", "a_desc": "Calcium group", "b_desc": "Main fertilizers", "c_desc": "Acid (store separately)" },
+  "unit": { "kg": "kg", "ml": "mL", "l": "L", "mmol_l": "mmol/L", "ms_cm": "mS/cm" },
+  "label": { "ec_est": "EC estimate", "raw_water": "Raw water analysis", "target": "Target concentration", "prescription": "Prescription", "warning": "Warning", "stage": "Stage", "edit_raw": "Edit water analysis" },
+  "warning": { "no3_shortfall": "NO₃ deficit — high-HCO₃ water constraint", "ec_range": "EC out of range", "ca_fallback": "Ca fertilizer auto-switched", "ca_unavailable": "No Ca fertilizer — prescription blocked" },
+  "fert": {
+    "agrogold155": "Agrogold CAN 15.5", "calcinit_yara": "Yara Calcium Nitrate", "kno3": "Potassium Nitrate", "nh4no3": "Ammonium Nitrate", "mgso4": "Magnesium Sulfate", "mg_no3_2": "Magnesium Nitrate", "kh2po4": "Monopotassium Phosphate", "k2so4": "Potassium Sulfate", "feEdta": "Fe-EDTA 13%", "feDtpa": "Fe-DTPA 11%", "feEddha": "Fe-EDDHA 6%", "hno3": "Nitric Acid 68%", "h3po4": "Phosphoric Acid 85%", "h3bo3": "Boric Acid", "znso4": "Zinc Sulfate", "mnso4": "Manganese Sulfate", "cuso4": "Copper Sulfate", "na2moo4": "Sodium Molybdate"
+  }
+}

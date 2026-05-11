@@ -1,0 +1,6 @@
+{
+  "stage": {
+    "main": { "s1": "S1 · O'sish boshlang'ich", "s2": "S2 · Gullash", "s3": "S3 · Meva yiriklashishi", "s4": "S4 · Hosil yig'ish" },
+    "nursery": { "s0": "S0 · Ildiz otish", "s1": "S1 · Ona o'simlik", "s2": "S2 · Ona+novda", "s3": "S3 · Ko'chat ajratish", "s4": "S4 · O'sish", "s5_1": "S5-1 · Tayyorgarlik 1", "s5_2": "S5-2 · Tayyorgarlik 2", "s5_3": "S5-3 · Yuklashdan oldin" }
+  }
+}
