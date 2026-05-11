@@ -6,9 +6,9 @@
 
 <div class="min-h-screen bg-slate-900 text-white">
   <div class="bg-gradient-to-b from-green-900 to-slate-900 px-4 pt-10 pb-6">
-    <button onclick={() => goto('/')} class="text-green-300 text-sm mb-4 flex items-center gap-1">← {t('nav.back')}</button>
-    <div class="text-2xl font-bold">🌱 {t('mode.nursery')}</div>
-    <div class="text-green-300 text-sm mt-1">{t('mode.nursery_desc')}</div>
+    <button onclick={() => goto('/')} class="text-green-300 text-sm mb-4 flex items-center gap-1">← {$t('nav.back')}</button>
+    <div class="text-2xl font-bold">🌱 {$t('mode.nursery')}</div>
+    <div class="text-green-300 text-sm mt-1">{$t('mode.nursery_desc')}</div>
   </div>
 
   <div class="px-4 py-4 flex flex-col gap-3 max-w-lg mx-auto">
@@ -19,11 +19,11 @@
       >
         <div class="flex items-center justify-between">
           <div>
-            <div class="text-lg font-bold">{t(stage.label, 'stages')}</div>
+            <div class="text-lg font-bold">{$t(stage.label, 'stages')}</div>
             {#if stage.dates}
               <div class="text-slate-500 text-xs mt-0.5">{stage.dates} · {stage.days}</div>
             {/if}
-            <div class="text-slate-400 text-sm mt-1">EC {stage.ecMin}–{stage.ecMax} mS/cm</div>
+            <div class="text-slate-400 text-sm mt-1">EC {stage.ecMin}–{stage.ecMax} {$t('unit.ms_cm')}</div>
           </div>
           <div class="text-right">
             <div class="text-xs text-slate-500">K {stage.target.K} · Ca {stage.target.Ca}</div>

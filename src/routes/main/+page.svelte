@@ -6,9 +6,9 @@
 
 <div class="min-h-screen bg-slate-900 text-white">
   <div class="bg-gradient-to-b from-blue-900 to-slate-900 px-4 pt-10 pb-6">
-    <button onclick={() => goto('/')} class="text-blue-300 text-sm mb-4 flex items-center gap-1">← {t('nav.back')}</button>
-    <div class="text-2xl font-bold">🍓 {t('mode.main')}</div>
-    <div class="text-blue-300 text-sm mt-1">{t('mode.main_desc')}</div>
+    <button onclick={() => goto('/')} class="text-blue-300 text-sm mb-4 flex items-center gap-1">← {$t('nav.back')}</button>
+    <div class="text-2xl font-bold">🍓 {$t('mode.main')}</div>
+    <div class="text-blue-300 text-sm mt-1">{$t('mode.main_desc')}</div>
   </div>
 
   <div class="px-4 py-4 flex flex-col gap-3 max-w-lg mx-auto">
@@ -19,8 +19,8 @@
       >
         <div class="flex items-center justify-between">
           <div>
-            <div class="text-lg font-bold">{t(stage.label, 'stages')}</div>
-            <div class="text-slate-400 text-sm mt-1">EC {stage.ecMin}–{stage.ecMax} mS/cm</div>
+            <div class="text-lg font-bold">{$t(stage.label, 'stages')}</div>
+            <div class="text-slate-400 text-sm mt-1">EC {stage.ecMin}–{stage.ecMax} {$t('unit.ms_cm')}</div>
           </div>
           <div class="text-right">
             <div class="text-xs text-slate-500">NO₃ {stage.target.NO3} · K {stage.target.K}</div>
