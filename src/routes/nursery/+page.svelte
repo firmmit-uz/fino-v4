@@ -21,7 +21,7 @@
           <div>
             <div class="text-lg font-bold">{$t(stage.label, 'stages')}</div>
             {#if stage.dates}
-              <div class="text-slate-500 text-xs mt-0.5">{stage.dates} · {stage.days}</div>
+              <div class="text-slate-500 text-xs mt-0.5">{stage.dates} · {stage.days} {$t('unit.days_short')}</div>
             {/if}
             <div class="text-slate-400 text-sm mt-1">EC {stage.ecMin}–{stage.ecMax} {$t('unit.ms_cm')}</div>
           </div>

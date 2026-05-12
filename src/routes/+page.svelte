@@ -76,7 +76,7 @@
 
     <div class="rounded-xl bg-slate-800 border border-slate-700 p-4 text-xs text-slate-400">
       <div class="font-bold text-slate-300 mb-1">{$t('label.raw_water_ref')} · {$t('label.raw_water_src')}</div>
-      <div>pH 7.6 · EC 0.83 · HCO₃ 3.3 · Ca 2.0 · Mg 0.5 {$t('unit.mmol_l')}</div>
+      <div>pH 7.6 · EC 0.83 {$t('unit.ms_cm')} · HCO₃ 3.3 · Ca 2.0 · Mg 0.5 {$t('unit.mmol_l')}</div>
     </div>
   </div>
 </div>

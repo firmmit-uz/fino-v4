@@ -170,8 +170,16 @@ export function calcPrescription(
   }
 
   // ── EC 추정 (Sonneveld 2009, v2.5) ───────────────────────────
-  // pool already includes raw-water ions; Na + Cl added explicitly
-  // HCO3 EC_F ≈ 0.049 omitted (residual 0.5 mmol/L → <0.025 mS/cm error)
+  // pool already includes raw-water ions; Na + Cl added explicitly.
+  // raw.EC residual: accounts for unmeasured ionic contributors in source water
+  // (e.g. HCO3 at EC_F≈0.049, trace metals). Prevents systematic underestimation
+  // when raw.EC is high (e.g. Tashkent 0.83 vs Σ(ion×EC_F)≈0.55 mS/cm).
+  const rawEC_fromIons =
+    raw.NO3 * EC_F.NO3 + raw.NH4 * EC_F.NH4 + raw.K * EC_F.K +
+    raw.Ca  * EC_F.Ca  + raw.Mg  * EC_F.Mg  + raw.H2PO4 * EC_F.H2PO4 +
+    raw.SO4 * EC_F.SO4 + raw.Na  * EC_F.Na  + raw.Cl  * EC_F.Cl;
+  const rawEC_residual = Math.max(0, raw.EC - rawEC_fromIons);
+
   const ec =
     pool.NO3   * EC_F.NO3   +
     pool.NH4   * EC_F.NH4   +
@@ -181,7 +189,8 @@ export function calcPrescription(
     pool.H2PO4 * EC_F.H2PO4 +
     pool.SO4   * EC_F.SO4   +
     raw.Na     * EC_F.Na    +
-    raw.Cl     * EC_F.Cl;
+    raw.Cl     * EC_F.Cl    +
+    rawEC_residual;           // unmeasured ionic contributors (HCO3, trace metals)
 
   if (ec < 0.5 || ec > 3.5) {
     warnings.push({ level: 'P2', code: 'EC_OUT_OF_RANGE', params: { ec: ec.toFixed(2) } });

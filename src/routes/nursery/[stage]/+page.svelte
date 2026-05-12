@@ -39,7 +39,7 @@
     <div class="flex items-center justify-between">
       <div>
         <div class="text-2xl font-bold">{$t(stage.label, 'stages')}</div>
-        {#if stage.dates}<div class="text-green-400 text-xs mt-0.5">{stage.dates} · {stage.days}</div>{/if}
+        {#if stage.dates}<div class="text-green-400 text-xs mt-0.5">{stage.dates} · {stage.days} {$t('unit.days_short')}</div>{/if}
         <div class="text-green-300 text-sm">EC {stage.ecMin}–{stage.ecMax} {$t('unit.ms_cm')}</div>
       </div>
       <a href="/print/nursery/{stageId}" target="_blank"

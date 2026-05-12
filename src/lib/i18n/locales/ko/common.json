@@ -28,7 +28,8 @@
     "ml": "mL",
     "l": "L",
     "mmol_l": "mmol/L",
-    "ms_cm": "mS/cm"
+    "ms_cm": "mS/cm",
+    "days_short": "일"
   },
   "label": {
     "ec_est": "EC 추정",

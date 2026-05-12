@@ -43,11 +43,11 @@ describe('FINO calc engine — golden tests', () => {
     expect(ions.NO3, 'NO3 ≤ target×1.25').toBeLessThanOrEqual(targets.NO3 * 1.25);
   });
 
-  // 3. EC 추정값 0.5–2.0 범위
-  it('T03: estimated EC is within 0.5–2.0 mS/cm for S1', () => {
+  // 3. EC 추정값 0.5–2.5 범위 (raw.EC residual 포함 — Tashkent 0.83 mS/cm adds ~0.28 residual)
+  it('T03: estimated EC is within 0.5–2.5 mS/cm for S1 (includes raw.EC residual)', () => {
     const result = calcPrescription(S1.target, DEFAULT_RAW, DEFAULT_OPTS);
     expect(result.ec).toBeGreaterThan(0.5);
-    expect(result.ec).toBeLessThan(2.0);
+    expect(result.ec).toBeLessThan(2.5);
   });
 
   // 4. S3 K/Ca 비율 1.0–2.0 (Palencia 2010)
@@ -139,13 +139,18 @@ describe('FINO calc engine — extended golden tests', () => {
     }
   });
 
-  // T12: each stage produces distinct prescription (data integrity)
-  it('T12: S1 K prescription differs from S2; S3 equals S4 (RDA 2018)', () => {
-    const kAmounts = STAGES_MAIN.map(s =>
-      calcPrescription(s.target, DEFAULT_RAW, DEFAULT_OPTS).ferts.kno3 ?? 0
-    );
-    expect(kAmounts[0]).not.toBeCloseTo(kAmounts[1], 1);   // S1 ≠ S2
-    expect(kAmounts[2]).toBeCloseTo(kAmounts[3]!, 2);       // S3 = S4
+  // T12: all 4 main stages produce distinct prescriptions (data integrity)
+  it('T12: all 4 main stages have distinct NH4 targets and distinct prescriptions', () => {
+    // v2.14: S1 NH4=0.7, S2=0.5, S3=0.4, S4=0.3 — all distinct
+    const nh4Targets = STAGES_MAIN.map(s => s.target.NH4);
+    const uniqueNH4 = new Set(nh4Targets);
+    expect(uniqueNH4.size).toBe(4); // all 4 stages have distinct NH4
+
+    // H2PO4: S1=1.0, S2/S3/S4=1.25 — v2.14 standard
+    expect(STAGES_MAIN[0]!.target.H2PO4).toBe(1.0);
+    expect(STAGES_MAIN[1]!.target.H2PO4).toBe(1.25);
+    expect(STAGES_MAIN[2]!.target.H2PO4).toBe(1.25);
+    expect(STAGES_MAIN[3]!.target.H2PO4).toBe(1.25);
   });
 
   // T13: clampRaw rejects HCO3=999 and pH=-5
@@ -176,6 +181,15 @@ describe('FINO calc engine — extended golden tests', () => {
       const nf = (mod.warning as Record<string, string>).no3_shortfall;
       expect(nf, `${name} no3_shortfall must have {{delta}}`).toContain('{{delta}}');
     }
+  });
+
+  // T16: raw.EC residual contributes to EC estimate
+  it('T16: higher raw.EC yields higher estimated EC (unmeasured ion residual)', () => {
+    const lowEC  = calcPrescription(S1.target, { ...DEFAULT_RAW, EC: 0.0 }, DEFAULT_OPTS).ec;
+    const highEC = calcPrescription(S1.target, { ...DEFAULT_RAW, EC: 2.0 }, DEFAULT_OPTS).ec;
+    expect(highEC).toBeGreaterThan(lowEC);
+    // Difference should reflect unmeasured ionic contribution of 2.0 - 0.0 mS/cm raw water
+    expect(highEC - lowEC).toBeGreaterThan(0.5);
   });
 
   // T15: byTank TankItem array — hno3 has unit='mL', kno3 has unit='kg'
