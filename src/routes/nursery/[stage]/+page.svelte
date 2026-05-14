@@ -50,7 +50,7 @@
   </div>
 {:else}
 <div class="min-h-screen bg-bg pb-8">
-  <TopBar mode="nursery" onBack={() => goto('/nursery')} />
+  <TopBar onBack={() => goto('/nursery')} />
 
   <div class="px-4 py-4">
     <div class="flex items-start justify-between mb-1">

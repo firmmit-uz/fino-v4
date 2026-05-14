@@ -7,8 +7,8 @@
   import BottomNav from '$lib/components/BottomNav.svelte';
 </script>
 
-<div class="flex flex-col flex-1 overflow-hidden">
-  <TopBar mode="main" onBack={() => goto('/')} />
+<div class="pb-2">
+  <TopBar onBack={() => goto('/')} />
 
   <div class="px-4 py-4">
     <div class="text-xl font-bold text-ink mb-1">🍓 {$t('mode.main')}</div>
@@ -31,5 +31,5 @@
       {/each}
     </div>
   </div>
-  <BottomNav active="stages" mode="main" />
+  <BottomNav active="stages" />
 </div>

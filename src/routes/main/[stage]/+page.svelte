@@ -54,7 +54,7 @@
   </div>
 {:else}
 <div class="min-h-screen bg-bg pb-8">
-  <TopBar mode="main" onBack={() => goto('/main')} />
+  <TopBar onBack={() => goto('/main')} />
 
   <!-- Hero -->
   <div class="px-4 py-4">

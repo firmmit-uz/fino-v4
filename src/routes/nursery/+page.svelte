@@ -7,7 +7,7 @@
 </script>
 
 <div class="min-h-screen bg-bg pb-8">
-  <TopBar mode="nursery" onBack={() => goto('/')} />
+  <TopBar onBack={() => goto('/')} />
 
   <div class="px-4 py-4">
     <div class="text-xl font-bold text-ink mb-1">🌱 {$t('mode.nursery')}</div>

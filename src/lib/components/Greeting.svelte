@@ -1,17 +1,22 @@
 <script lang="ts">
   import { t } from '$lib/i18n/index.js';
 
-  let { name = '' }: { name?: string } = $props();
+  let { name = 'Амиrhon' }: { name?: string } = $props();
 
   const now = new Date();
-  const dateStr = now.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-  const hour = now.getHours();
-  const greetKey = hour < 12 ? 'home.greeting' : hour < 17 ? 'home.greeting' : 'home.greeting';
+  const dateStr = now.toLocaleDateString($t('app.name') === 'FINO' ? 'ko-KR' : undefined, {
+    month: 'long', day: 'numeric', weekday: 'short',
+  });
 </script>
 
-<div class="px-4 pt-4 pb-2">
-  <div class="text-xs text-ink3 font-semibold">{dateStr}</div>
-  <div class="text-xl font-bold text-ink mt-0.5">
-    {$t(greetKey)}{name ? `, ${name}` : ''}
+<div class="pt-2 pb-4">
+  <div class="text-[11px] font-semibold text-ink3 uppercase tracking-wider mb-1">
+    {dateStr}
   </div>
+  <div class="text-[28px] font-black text-ink leading-tight">
+    {$t('home.greeting')}
+  </div>
+  {#if name}
+    <div class="text-sm text-ink3 mt-1 font-medium">{name} · Staff</div>
+  {/if}
 </div>

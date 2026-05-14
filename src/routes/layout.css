@@ -1,46 +1,46 @@
 @import 'tailwindcss';
 
-/* ── FIRMMIT Design Tokens ─────────────────────────────────── */
+/* ── FIRMMIT AMIM Design Tokens ───────────────────────────── */
 @theme {
   /* Brand */
-  --color-brand:        #3365FF;
-  --color-brand-deep:   #1E3FA8;
-  --color-brand-light:  #D6E0FF;
-  --color-brand-surface:#EEF3FF;
+  --color-brand:         #3365FF;
+  --color-brand-deep:    #1E40AF;
+  --color-brand-light:   #DBEAFE;
+  --color-brand-surface: #EFF6FF;
 
-  /* Nursery green */
-  --color-nursery:       #16A34A;
-  --color-nursery-deep:  #14532D;
-  --color-nursery-light: #D1FAE5;
-  --color-nursery-surface:#ECFDF5;
+  /* Nursery greens */
+  --color-nursery:         #16A34A;
+  --color-nursery-deep:    #14532D;
+  --color-nursery-light:   #DCFCE7;
+  --color-nursery-surface: #F0FDF4;
 
   /* Semantic */
-  --color-amber:        #E6A817;
-  --color-amber-light:  #FFF6E0;
-  --color-amber-deep:   #8A5D00;
-  --color-danger:       #F25555;
-  --color-danger-light: #FEE8E8;
-  --color-danger-deep:  #B8322F;
+  --color-amber:        #F59E0B;
+  --color-amber-light:  #FEF3C7;
+  --color-amber-deep:   #92400E;
+  --color-danger:       #EF4444;
+  --color-danger-light: #FEE2E2;
+  --color-danger-deep:  #991B1B;
 
-  /* Tank */
-  --color-tank-a:       #3365FF;
-  --color-tank-a-bg:    #EEF3FF;
-  --color-tank-b:       #2A7FFA;
-  --color-tank-b-bg:    #E0EEFF;
-  --color-tank-c:       #E6A817;
-  --color-tank-c-bg:    #FFF6E0;
+  /* Tank accents (AMIM spec: A=red, B=blue, C=amber) */
+  --color-tank-a:     #DC2626;
+  --color-tank-a-bg:  #FEF2F2;
+  --color-tank-b:     #2563EB;
+  --color-tank-b-bg:  #EFF6FF;
+  --color-tank-c:     #D97706;
+  --color-tank-c-bg:  #FFFBEB;
 
   /* Ink scale */
-  --color-ink:          #292C34;
-  --color-ink2:         #4A4E5A;
-  --color-ink3:         #9898A0;
-  --color-ink4:         #C5C5CC;
+  --color-ink:      #0F172A;
+  --color-ink2:     #64748B;
+  --color-ink3:     #94A3B8;
+  --color-ink4:     #CBD5E1;
 
-  /* Surface */
-  --color-bg:           #F5F7FB;
-  --color-card:         #FFFFFF;
-  --color-border:       #E4E7EF;
-  --color-hairline:     #EEF0F5;
+  /* Surface (light, airy) */
+  --color-bg:       #F8FAFC;
+  --color-card:     #FFFFFF;
+  --color-border:   #E2E8F0;
+  --color-hairline: #F1F5F9;
 
   /* Typography */
   --font-sans: 'Pretendard', 'Noto Sans KR', system-ui, sans-serif;
@@ -48,4 +48,8 @@
 }
 
 /* ── Global base ───────────────────────────────────────────── */
-html, body { font-family: var(--font-sans); }
+html, body {
+  font-family: var(--font-sans);
+  background: #F8FAFC;
+  color: #0F172A;
+}

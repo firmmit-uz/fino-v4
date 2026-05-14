@@ -4,8 +4,8 @@
   "description": "Strawberry hydroponic nutrient solution calculator for Tashkent farmers",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#F5F7FB",
-  "theme_color": "#3365FF",
+  "background_color": "#F8FAFC",
+  "theme_color": "#FFFFFF",
   "icons": [
     { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
   ]

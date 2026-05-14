@@ -43,7 +43,7 @@
   </div>
 {:else}
 <div class="flex flex-col flex-1 overflow-hidden">
-  <TopBar mode="nursery_indoor" onBack={() => goto('/nursery/indoor')} />
+  <TopBar onBack={() => goto('/nursery/indoor')} />
   <div class="flex-1 overflow-y-auto">
     <div class="px-4 pt-4 pb-2">
       <div class="flex items-start justify-between">
@@ -71,6 +71,6 @@
       {/if}
     </div>
   </div>
-  <BottomNav active="rx" mode="nursery_indoor" />
+  <BottomNav active="rx" />
 </div>
 {/if}

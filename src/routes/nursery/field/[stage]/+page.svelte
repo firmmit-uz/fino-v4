@@ -44,7 +44,7 @@
   </div>
 {:else}
 <div class="flex flex-col flex-1 overflow-hidden">
-  <TopBar mode="nursery_field" onBack={() => goto('/nursery/field')} />
+  <TopBar onBack={() => goto('/nursery/field')} />
   <div class="flex-1 overflow-y-auto">
     <div class="px-4 pt-4 pb-2">
       <div class="flex items-start justify-between">
@@ -90,6 +90,6 @@
       {/if}
     </div>
   </div>
-  <BottomNav active="rx" mode="nursery_field" />
+  <BottomNav active="rx" />
 </div>
 {/if}
