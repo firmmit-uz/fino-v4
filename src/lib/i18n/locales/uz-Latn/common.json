@@ -5,10 +5,10 @@
   },
   "mode": {
     "select": "O'stirish rejimini tanlang",
-    "main": "Asosiy ekin",
+    "main": "Tijoriy yetishtirish",
     "nursery": "Ko'chat xonasi",
     "main_desc": "Sentabr–May · S1–S4",
-    "nursery_desc": "Iyun–Avgust · S0–S5-3",
+    "nursery_desc": "Iyun–Avg · S1–S4",
     "select_variety": "Avval navni tanlang",
     "confirmed": "Rejim tasdiqlandi",
     "nursery_field": "Dala ko'chatzori",
@@ -20,7 +20,7 @@
     "back": "Orqaga",
     "print": "Chop etish",
     "stages": "Bosqichlar ro'yxati",
-    "home": "Bosh",
+    "home": "Bosh sahifa",
     "rx": "Retsept",
     "guide": "Qo'llanma",
     "log": "Jurnal",
@@ -39,7 +39,7 @@
     "ml": "mL",
     "l": "L",
     "mmol_l": "mmol/L",
-    "ms_cm": "mSm/sm",
+    "ms_cm": "mS/cm",
     "days_short": "kun"
   },
   "label": {
@@ -59,7 +59,7 @@
   },
   "warning": {
     "no3_shortfall": "NO₃ {{delta}} mmol/L kamligi — yuqori HCO₃ K chegarasi",
-    "ec_out_of_range": "EO {{ec}} mSm/sm diapazondan chiqdi (0.5–3.5)",
+    "ec_out_of_range": "EO {{ec}} mS/cm diapazondan chiqdi (0.5–3.5)",
     "ca_fallback": "Ca o'g'iti avtomatik almashtirildi: {{from}} → {{to}}",
     "ca_unavailable": "Ca o'g'iti yo'q — retsept tayyorlanmadi",
     "raw_out_of_range": "Xom suv {{field}} = {{value}} ruxsat diapazonidan [{{lo}}~{{hi}}] chiqdi, tuzatildi"
@@ -79,17 +79,17 @@
     "hno3": "Azot kislotasi 68%",
     "h3po4": "Fosfor kislotasi 85%",
     "h3bo3": "Bor kislotasi",
-    "znso4": "Rux sulfati",
+    "znso4": "Ruh sulfati",
     "mnso4": "Marganets sulfati",
     "cuso4": "Mis sulfati",
     "na2moo4": "Natriy molibdati"
   },
   "variety": {
     "title": "Qulupnay navi",
-    "seolhyang": "Solhyang",
+    "seolhyang": "Seolhyang",
     "maehyang": "Maehyang",
-    "kuemsil": "Kumsil",
-    "daehong": "Daehong",
+    "geumsil": "Geumshil",
+    "jukhyang": "Jukhyang",
     "other": "Boshqa"
   },
   "focus": {

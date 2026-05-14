@@ -8,7 +8,7 @@
     "main": "본격재배",
     "nursery": "육묘장",
     "main_desc": "9월~5월 · S1~S4",
-    "nursery_desc": "6월~8월 · S0~S5-3",
+    "nursery_desc": "6월~8월 · S1~S4",
     "select_variety": "품종을 먼저 선택하세요",
     "confirmed": "모드 확정",
     "nursery_field": "노지 육묘",
@@ -88,8 +88,8 @@
     "title": "딸기 품종",
     "seolhyang": "설향",
     "maehyang": "매향",
-    "kuemsil": "금실",
-    "daehong": "대홍",
+    "geumsil": "금실",
+    "jukhyang": "죽향",
     "other": "기타"
   },
   "focus": {

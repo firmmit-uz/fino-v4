@@ -7,7 +7,7 @@
  */
 
 // ── Dimensions ─────────────────────────────────────────────────
-const VARIETIES = ['seolhyang', 'maehyang', 'kuemsil', 'daehong', 'other'];
+const VARIETIES = ['seolhyang', 'maehyang', 'geumsil', 'jukhyang', 'other'];
 const FOCUSES   = ['balanced', 'high_yield', 'quality', 'rooting'];
 const WINTERS   = ['summer', 'winter'];
 
@@ -40,8 +40,8 @@ const BASE = {
 const VARIETY_MOD = {
   seolhyang: { K: 1.00, Ca: 1.10, NO3: 1.00 }, // high Ca demand (Palencia 2010)
   maehyang:  { K: 1.05, Ca: 1.00, NO3: 1.02 },
-  kuemsil:   { K: 0.95, Ca: 1.05, NO3: 0.98 },
-  daehong:   { K: 1.02, Ca: 1.02, NO3: 1.00 },
+  geumsil:   { K: 0.95, Ca: 1.05, NO3: 0.98 },
+  jukhyang:   { K: 1.02, Ca: 1.02, NO3: 1.00 },
   other:     { K: 1.00, Ca: 1.00, NO3: 1.00 },
 };
 
@@ -61,8 +61,8 @@ const WINTER_EC_FACTOR = { summer: 1.00, winter: 0.85 };
 const KCA_SAFE = {
   seolhyang: 1.65,
   maehyang:  1.655, // raised from 1.60: high-K tolerant similar to seolhyang (Kim 2013)
-  kuemsil:   1.55,
-  daehong:   1.60,
+  geumsil:   1.55,
+  jukhyang:  1.70,  // K/Ca 1.7 tolerant per RDA registration data
   other:     1.60,
 };
 

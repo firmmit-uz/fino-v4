@@ -5,10 +5,10 @@
   },
   "mode": {
     "select": "Select Growing Mode",
-    "main": "Main Crop",
+    "main": "Main Cultivation",
     "nursery": "Nursery",
     "main_desc": "Sep–May · S1–S4",
-    "nursery_desc": "Jun–Aug · S0–S5-3",
+    "nursery_desc": "Jun–Aug · S1–S4",
     "select_variety": "Select variety first",
     "confirmed": "Mode confirmed",
     "nursery_field": "Field nursery",
@@ -88,8 +88,8 @@
     "title": "Strawberry Variety",
     "seolhyang": "Seolhyang",
     "maehyang": "Maehyang",
-    "kuemsil": "Kuemsil",
-    "daehong": "Daehong",
+    "geumsil": "Geumsil",
+    "jukhyang": "Jukhyang",
     "other": "Other"
   },
   "focus": {
