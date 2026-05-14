@@ -1,8 +1,9 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { setLang, langStore, SUPPORTED_LANGS, type Lang } from '$lib/i18n/index.js';
+  import FirmmitLogo from './FirmmitLogo.svelte';
 
-  let { onBack }: { onBack?: () => void } = $props();
+  let { onBack, pill = 'FINO' }: { onBack?: () => void; pill?: string } = $props();
 
   const LANG_LABELS: Record<Lang, string> = {
     'uz-Cyrl': 'УЗ', 'uz-Latn': 'UZ', ko: '한', ru: 'RU', en: 'EN',
@@ -14,18 +15,15 @@
 
     {#if onBack}
       <button onclick={onBack}
-        class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-hairline mr-1">
+        class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-hairline mr-1 flex-shrink-0">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
              stroke="currentColor" stroke-width="2.5"><path d="M15 6l-6 6 6 6"/></svg>
       </button>
     {/if}
 
-    <!-- Brand wordmark -->
-    <button onclick={() => goto('/')} class="flex items-center gap-2 flex-shrink-0">
-      <span class="text-[17px] font-black tracking-tight text-brand">FIRMMIT.</span>
-      <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-hairline text-ink3 tracking-wide">
-        FINO
-      </span>
+    <!-- Official FIRMMIT wordmark PNG -->
+    <button onclick={() => goto('/')} class="flex items-center">
+      <FirmmitLogo variant="blue" height={22} {pill} />
     </button>
 
     <div class="flex-1" />
@@ -43,7 +41,7 @@
       {/each}
     </div>
 
-    <!-- Avatar / settings link -->
+    <!-- Avatar → /settings -->
     <button onclick={() => goto('/settings')}
       class="w-8 h-8 rounded-full flex items-center justify-center
              text-white text-xs font-bold flex-shrink-0 ml-1"

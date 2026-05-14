@@ -5,12 +5,10 @@
   import { initI18n } from '$lib/i18n/index.js';
   import TopBar from '$lib/components/TopBar.svelte';
   import BottomNav from '$lib/components/BottomNav.svelte';
-  import favicon from '$lib/assets/favicon.svg';
 
   let { children } = $props();
   let ready = $state(false);
 
-  // Derive active tab from current path
   const activeTab = $derived(() => {
     const p = $page.url.pathname;
     if (p === '/') return 'home';
@@ -20,7 +18,6 @@
     return 'home';
   });
 
-  // Derive mode from current path
   const navMode = $derived(() => {
     const p = $page.url.pathname;
     if (p.startsWith('/nursery/indoor')) return 'nursery_indoor';
@@ -35,8 +32,7 @@
 </script>
 
 <svelte:head>
-  <link rel="icon" href={favicon} />
-  <meta name="theme-color" content="#FFFFFF" />
+  <meta name="theme-color" content="#16A34A" />
 </svelte:head>
 
 {#if ready}
@@ -45,16 +41,15 @@
     <main class="max-w-[640px] mx-auto px-5 pt-4 pb-28">
       {@render children()}
     </main>
-    <!-- BottomNav: mobile only -->
     <div class="md:hidden">
       <BottomNav active={activeTab()} mode={navMode()} />
     </div>
   </div>
 {:else}
-  <!-- Minimal loading splash -->
   <div class="min-h-screen bg-bg flex items-center justify-center">
     <div class="text-center">
-      <div class="text-4xl font-black text-brand tracking-widest mb-2">FIRMMIT.</div>
+      <img src="/logos/firmmit-blue.png" alt="FIRMMIT" height="32"
+           style="width:auto; margin:0 auto 12px" />
       <div class="text-sm text-ink3">Loading…</div>
     </div>
   </div>

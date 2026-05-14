@@ -1,12 +1,12 @@
 {
-  "name": "FINO — Nutrient Solution",
+  "name": "FIRMMIT FINO",
   "short_name": "FINO",
-  "description": "Strawberry hydroponic nutrient solution calculator for Tashkent farmers",
+  "description": "Strawberry hydroponic nutrient prescription system",
   "start_url": "/",
   "display": "standalone",
+  "theme_color": "#16A34A",
   "background_color": "#F8FAFC",
-  "theme_color": "#FFFFFF",
   "icons": [
-    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+    { "src": "/favicon.svg", "type": "image/svg+xml", "sizes": "any", "purpose": "any maskable" }
   ]
 }

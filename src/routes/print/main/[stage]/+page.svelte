@@ -2,6 +2,7 @@
   import { page } from '$app/stores';
   import { t } from '$lib/i18n/index.js';
   import { findStage } from '$lib/engine/stages.js';
+  import FirmmitLogo from '$lib/components/FirmmitLogo.svelte';
   import { calcPrescription, byTank } from '$lib/engine/calc.js';
   import { DEFAULT_RAW, DEFAULT_OPTS } from '$lib/engine/defaults.js';
 
@@ -25,7 +26,7 @@
   <div class="border-b-4 border-green-600 pb-4 mb-6">
     <div class="flex items-center justify-between">
       <div>
-        <div class="text-3xl font-black tracking-wide text-green-700">FINO</div>
+        <FirmmitLogo variant="black" height={40} pill="FINO" />
         <div class="text-sm text-gray-500">{$t('mode.main')} · {stage.id} · {$t(stage.label, 'stages')}</div>
       </div>
       <div class="text-right">
