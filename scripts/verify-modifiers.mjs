@@ -12,20 +12,27 @@ const FOCUSES   = ['balanced', 'high_yield', 'quality', 'rooting'];
 const WINTERS   = ['summer', 'winter'];
 
 // 4-stage nursery (v4.3) + 4-stage main crop
-const NURSERY_STAGES = ['N-S1', 'N-S2', 'N-S3', 'N-S4'];
-const MAIN_STAGES    = ['M-S1', 'M-S2', 'M-S3', 'M-S4'];
-const ALL_STAGES     = [...NURSERY_STAGES, ...MAIN_STAGES];
+const NURSERY_FIELD_STAGES  = ['NF-S1', 'NF-S2', 'NF-S3', 'NF-S4'];
+const NURSERY_INDOOR_STAGES = ['NI-S1', 'NI-S2', 'NI-S3', 'NI-S4'];
+const MAIN_STAGES           = ['M-S1',  'M-S2',  'M-S3',  'M-S4'];
+const ALL_STAGES = [...NURSERY_FIELD_STAGES, ...NURSERY_INDOOR_STAGES, ...MAIN_STAGES];
 
 // ── Base targets (mmol/L) ───────────────────────────────────────
+// NF = nursery field, NI = nursery indoor (EC−0.1, Ca+0.3, NH4−0.1), M = main crop
 const BASE = {
-  'N-S1': { NO3: 8.0, NH4: 0.5, K: 4.0, Ca: 3.0, Mg: 1.5, H2PO4: 1.0 },
-  'N-S2': { NO3: 9.0, NH4: 0.6, K: 4.5, Ca: 3.0, Mg: 1.5, H2PO4: 1.0 },
-  'N-S3': { NO3: 4.0, NH4: 0.3, K: 5.0, Ca: 3.5, Mg: 1.5, H2PO4: 1.5 }, // Ca 3.5 per G1 safety (2026-05-D-18)
-  'N-S4': { NO3: 3.0, NH4: 0.2, K: 4.5, Ca: 3.0, Mg: 1.5, H2PO4: 1.2 },
-  'M-S1': { NO3: 11.5, NH4: 0.7, K: 4.0, Ca: 3.5, Mg: 1.0, H2PO4: 1.0 },
-  'M-S2': { NO3: 11.5, NH4: 0.5, K: 5.5, Ca: 4.0, Mg: 1.5, H2PO4: 1.25 },
-  'M-S3': { NO3: 12.0, NH4: 0.4, K: 6.0, Ca: 4.0, Mg: 1.5, H2PO4: 1.25 },
-  'M-S4': { NO3: 12.0, NH4: 0.3, K: 6.0, Ca: 4.0, Mg: 1.5, H2PO4: 1.25 },
+  'NF-S1': { NO3: 8.0, NH4: 0.5, K: 4.0, Ca: 3.0, Mg: 1.5, H2PO4: 1.0 },
+  'NF-S2': { NO3: 9.0, NH4: 0.6, K: 4.5, Ca: 3.0, Mg: 1.5, H2PO4: 1.0 },
+  'NF-S3': { NO3: 4.0, NH4: 0.3, K: 5.0, Ca: 3.5, Mg: 1.5, H2PO4: 1.5 }, // Ca 3.5 per G1 safety (2026-05-D-18)
+  'NF-S4': { NO3: 3.0, NH4: 0.2, K: 4.5, Ca: 3.0, Mg: 1.5, H2PO4: 1.2 },
+  // Indoor: Ca +0.3, NH4 −0.1 vs field
+  'NI-S1': { NO3: 8.0, NH4: 0.4, K: 4.0, Ca: 3.3, Mg: 1.5, H2PO4: 1.0 },
+  'NI-S2': { NO3: 9.0, NH4: 0.5, K: 4.5, Ca: 3.3, Mg: 1.5, H2PO4: 1.0 },
+  'NI-S3': { NO3: 4.0, NH4: 0.2, K: 5.0, Ca: 3.8, Mg: 1.5, H2PO4: 1.5 },
+  'NI-S4': { NO3: 3.0, NH4: 0.1, K: 4.5, Ca: 3.3, Mg: 1.5, H2PO4: 1.2 },
+  'M-S1':  { NO3: 11.5, NH4: 0.7, K: 4.0, Ca: 3.5, Mg: 1.0, H2PO4: 1.0 },
+  'M-S2':  { NO3: 11.5, NH4: 0.5, K: 5.5, Ca: 4.0, Mg: 1.5, H2PO4: 1.25 },
+  'M-S3':  { NO3: 12.0, NH4: 0.4, K: 6.0, Ca: 4.0, Mg: 1.5, H2PO4: 1.25 },
+  'M-S4':  { NO3: 12.0, NH4: 0.3, K: 6.0, Ca: 4.0, Mg: 1.5, H2PO4: 1.25 },
 };
 
 // ── G1 Variety modifiers (multiplicative on base) ───────────────
@@ -127,7 +134,7 @@ for (const variety of VARIETIES) {
 
 const total = VARIETIES.length * FOCUSES.length * WINTERS.length * ALL_STAGES.length;
 console.log(`\nFINO v4.3 — G1 Modifier Matrix verification`);
-console.log(`Combos: ${total} (5×4×2×8)`);
+console.log(`Combos: ${total} (5×4×2×12 = field×4 + indoor×4 + main×4)`);
 console.log(`✅ Passed: ${passed}  ❌ Failed: ${failed}\n`);
 
 if (failures.length > 0) {

@@ -10,7 +10,11 @@
     "main_desc": "Sep–May · S1–S4",
     "nursery_desc": "Jun–Aug · S0–S5-3",
     "select_variety": "Select variety first",
-    "confirmed": "Mode confirmed"
+    "confirmed": "Mode confirmed",
+    "nursery_field": "Field nursery",
+    "nursery_indoor": "Indoor nursery",
+    "nursery_field_desc": "Jun–Aug · outdoor",
+    "nursery_indoor_desc": "Jun–Aug · greenhouse"
   },
   "nav": {
     "back": "Back",

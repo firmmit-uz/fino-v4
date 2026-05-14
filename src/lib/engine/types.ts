@@ -40,7 +40,7 @@ export interface Stage {
   target: TargetIons;
   dates?: string;
   days?: string;
-  mode: 'main' | 'nursery';
+  mode: 'main' | 'nursery_field' | 'nursery_indoor';
 }
 
 export type CalcinitSource = 'agrogold155' | 'calcinit_yara';

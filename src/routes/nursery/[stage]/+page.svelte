@@ -78,7 +78,7 @@
       <SectionLabel label={$t('label.prescription')} />
       {#each (['A','B','C'] as const) as tk}
         {#if tanks && tanks[tk].length > 0}
-          <TankCard tank={tk} items={tanks[tk]} mode="nursery" />
+          <TankCard tank={tk} items={tanks[tk]} />
         {/if}
       {/each}
       <IonTable ions={result.ions} target={modifiedTarget()} />

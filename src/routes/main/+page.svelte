@@ -4,9 +4,10 @@
   import { STAGES_MAIN } from '$lib/engine/stages.js';
   import TopBar from '$lib/components/TopBar.svelte';
   import StagePill from '$lib/components/StagePill.svelte';
+  import BottomNav from '$lib/components/BottomNav.svelte';
 </script>
 
-<div class="min-h-screen bg-bg pb-8">
+<div class="flex flex-col flex-1 overflow-hidden">
   <TopBar mode="main" onBack={() => goto('/')} />
 
   <div class="px-4 py-4">
@@ -30,4 +31,5 @@
       {/each}
     </div>
   </div>
+  <BottomNav active="stages" mode="main" />
 </div>

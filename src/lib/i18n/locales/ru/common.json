@@ -10,7 +10,11 @@
     "main_desc": "Сентябрь–Май · S1–S4",
     "nursery_desc": "Июнь–Август · S0–S5-3",
     "select_variety": "Сначала выберите сорт",
-    "confirmed": "Режим подтверждён"
+    "confirmed": "Режим подтверждён",
+    "nursery_field": "Полевой питомник",
+    "nursery_indoor": "Тепличный питомник",
+    "nursery_field_desc": "Июн–Авг · открытый",
+    "nursery_indoor_desc": "Июн–Авг · теплица"
   },
   "nav": {
     "back": "Назад",

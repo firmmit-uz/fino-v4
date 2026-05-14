@@ -10,7 +10,11 @@
     "main_desc": "9월~5월 · S1~S4",
     "nursery_desc": "6월~8월 · S0~S5-3",
     "select_variety": "품종을 먼저 선택하세요",
-    "confirmed": "모드 확정"
+    "confirmed": "모드 확정",
+    "nursery_field": "노지 육묘",
+    "nursery_indoor": "실내 육묘",
+    "nursery_field_desc": "6월~8월 · 노지",
+    "nursery_indoor_desc": "6월~8월 · 시설"
   },
   "nav": {
     "back": "뒤로",

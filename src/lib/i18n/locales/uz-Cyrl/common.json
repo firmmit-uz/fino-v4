@@ -10,7 +10,11 @@
     "main_desc": "Сентябр–Май · S1–S4",
     "nursery_desc": "Июн–Август · S0–S5-3",
     "select_variety": "Avval navni tanlang",
-    "confirmed": "Режим тасдиқланди"
+    "confirmed": "Режим тасдиқланди",
+    "nursery_field": "Дала кўчатзори",
+    "nursery_indoor": "Иссиқхона кўчатзори",
+    "nursery_field_desc": "Июн–Авг · очиқ",
+    "nursery_indoor_desc": "Июн–Авг · иссиқхона"
   },
   "nav": {
     "back": "Орқага",

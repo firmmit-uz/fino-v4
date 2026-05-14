@@ -2,7 +2,7 @@
   import FirmmitLogo from './FirmmitLogo.svelte';
   import { setLang, langStore, SUPPORTED_LANGS, type Lang } from '$lib/i18n/index.js';
 
-  let { mode = 'main', onBack }: { mode?: 'main'|'nursery'|'root'; onBack?: () => void } = $props();
+  let { mode = 'main', onBack }: { mode?: 'main'|'nursery'|'nursery_field'|'nursery_indoor'|'root'; onBack?: () => void } = $props();
 
   const accentClass = $derived(mode === 'nursery'
     ? 'bg-nursery-surface border-nursery-light'
