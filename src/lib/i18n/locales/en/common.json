@@ -8,12 +8,19 @@
     "main": "Main Crop",
     "nursery": "Nursery",
     "main_desc": "Sep–May · S1–S4",
-    "nursery_desc": "Jun–Aug · S0–S5-3"
+    "nursery_desc": "Jun–Aug · S0–S5-3",
+    "select_variety": "Select variety first",
+    "confirmed": "Mode confirmed"
   },
   "nav": {
     "back": "Back",
     "print": "Print",
-    "stages": "Stage List"
+    "stages": "Stage List",
+    "home": "Home",
+    "rx": "Prescription",
+    "guide": "Guide",
+    "log": "Log",
+    "settings": "Settings"
   },
   "tank": {
     "a": "Tank A",
@@ -43,7 +50,8 @@
     "edit_raw": "Edit water analysis",
     "ions": "Ion concentrations",
     "reset_raw": "Restore defaults",
-    "acid_dilution": "Concentrate 1:100 dilution required"
+    "acid_dilution": "Concentrate 1:100 dilution required",
+    "stage_not_found": "Stage not found"
   },
   "warning": {
     "no3_shortfall": "NO₃ {{delta}} mmol/L below target — high-HCO₃ K ceiling",
@@ -71,5 +79,41 @@
     "mnso4": "Manganese Sulfate",
     "cuso4": "Copper Sulfate",
     "na2moo4": "Sodium Molybdate"
+  },
+  "variety": {
+    "title": "Strawberry Variety",
+    "seolhyang": "Seolhyang",
+    "maehyang": "Maehyang",
+    "kuemsil": "Kuemsil",
+    "daehong": "Daehong",
+    "other": "Other"
+  },
+  "focus": {
+    "title": "Growing Focus",
+    "balanced": "Balanced (standard)",
+    "high_yield": "High yield",
+    "quality": "High quality",
+    "rooting": "Root establishment"
+  },
+  "home": {
+    "greeting": "Hello",
+    "today": "Today",
+    "stage_current": "Current stage",
+    "prescription_today": "Today's prescription"
+  },
+  "settings": {
+    "title": "Settings",
+    "variety": "Select variety",
+    "mode_change": "Change mode",
+    "language": "Language",
+    "raw_water": "Water source"
+  },
+  "winter": {
+    "title": "Seasonal factor",
+    "summer_mode": "Summer mode",
+    "winter_mode": "Winter mode",
+    "summer_desc": "High temp detected (32°C) — EC −0.2",
+    "winter_desc": "Winter coefficient — ×0.85",
+    "factor": "×{{factor}}"
   }
 }

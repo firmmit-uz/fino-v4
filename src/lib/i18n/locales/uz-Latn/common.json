@@ -8,12 +8,19 @@
     "main": "Asosiy ekin",
     "nursery": "Ko'chat xonasi",
     "main_desc": "Sentabr–May · S1–S4",
-    "nursery_desc": "Iyun–Avgust · S0–S5-3"
+    "nursery_desc": "Iyun–Avgust · S0–S5-3",
+    "select_variety": "Avval navni tanlang",
+    "confirmed": "Rejim tasdiqlandi"
   },
   "nav": {
     "back": "Orqaga",
     "print": "Chop etish",
-    "stages": "Bosqichlar ro'yxati"
+    "stages": "Bosqichlar ro'yxati",
+    "home": "Bosh",
+    "rx": "Retsept",
+    "guide": "Qo'llanma",
+    "log": "Jurnal",
+    "settings": "Sozlamalar"
   },
   "tank": {
     "a": "A idishi",
@@ -43,7 +50,8 @@
     "edit_raw": "Suvni tahrirlash",
     "ions": "Ion konsentratsiyasi",
     "reset_raw": "Asosiyga qaytarish",
-    "acid_dilution": "Eritma 1:100 suyultirish shart"
+    "acid_dilution": "Eritma 1:100 suyultirish shart",
+    "stage_not_found": "Bosqich topilmadi"
   },
   "warning": {
     "no3_shortfall": "NO₃ {{delta}} mmol/L kamligi — yuqori HCO₃ K chegarasi",
@@ -71,5 +79,41 @@
     "mnso4": "Marganets sulfati",
     "cuso4": "Mis sulfati",
     "na2moo4": "Natriy molibdati"
+  },
+  "variety": {
+    "title": "Qulupnay navi",
+    "seolhyang": "Solhyang",
+    "maehyang": "Maehyang",
+    "kuemsil": "Kumsil",
+    "daehong": "Daehong",
+    "other": "Boshqa"
+  },
+  "focus": {
+    "title": "O'stirish maqsadi",
+    "balanced": "Muvozanatli (standart)",
+    "high_yield": "Yuqori hosil",
+    "quality": "Yuqori sifat",
+    "rooting": "Ildiz mustahkamlash"
+  },
+  "home": {
+    "greeting": "Xush kelibsiz",
+    "today": "Bugun",
+    "stage_current": "Joriy bosqich",
+    "prescription_today": "Bugungi retsept"
+  },
+  "settings": {
+    "title": "Sozlamalar",
+    "variety": "Nav tanlash",
+    "mode_change": "Rejimni o'zgartirish",
+    "language": "Til",
+    "raw_water": "Xom suv"
+  },
+  "winter": {
+    "title": "Mavsumiy koeffitsient",
+    "summer_mode": "Yoz rejimi",
+    "winter_mode": "Qish rejimi",
+    "summer_desc": "Yuqori harorat (32°C) — EO −0.2",
+    "winter_desc": "Qish koeffitsienti — ×0.85",
+    "factor": "×{{factor}}"
   }
 }

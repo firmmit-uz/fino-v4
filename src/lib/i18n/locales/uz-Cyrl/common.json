@@ -8,12 +8,19 @@
     "main": "Асосий экин",
     "nursery": "Кўчат хонаси",
     "main_desc": "Сентябр–Май · S1–S4",
-    "nursery_desc": "Июн–Август · S0–S5-3"
+    "nursery_desc": "Июн–Август · S0–S5-3",
+    "select_variety": "Avval navni tanlang",
+    "confirmed": "Режим тасдиқланди"
   },
   "nav": {
     "back": "Орқага",
     "print": "Чоп этиш",
-    "stages": "Босқичлар рўйхати"
+    "stages": "Босқичлар рўйхати",
+    "home": "Бош",
+    "rx": "Рецепт",
+    "guide": "Қўлланма",
+    "log": "Журнал",
+    "settings": "Созламалар"
   },
   "tank": {
     "a": "А идиши",
@@ -43,7 +50,8 @@
     "edit_raw": "Сувни таҳрирлаш",
     "ions": "Ион концентрацияси",
     "reset_raw": "Асосийга қайтариш",
-    "acid_dilution": "Эритма 1:100 суюлтириш шарт"
+    "acid_dilution": "Эритма 1:100 суюлтириш шарт",
+    "stage_not_found": "Босқич топилмади"
   },
   "warning": {
     "no3_shortfall": "NO₃ {{delta}} mmol/l камлиги — юқори HCO₃ K чегараси",
@@ -71,5 +79,41 @@
     "mnso4": "Марганец сульфати",
     "cuso4": "Мис сульфати",
     "na2moo4": "Натрий молибдати"
+  },
+  "variety": {
+    "title": "Қулупнай нави",
+    "seolhyang": "Солхян",
+    "maehyang": "Мэхян",
+    "kuemsil": "Кымсил",
+    "daehong": "Техон",
+    "other": "Бошқа"
+  },
+  "focus": {
+    "title": "Ўстириш мақсади",
+    "balanced": "Мувозанатли (стандарт)",
+    "high_yield": "Юқори ҳосил",
+    "quality": "Юқори сифат",
+    "rooting": "Илдиз мустаҳкамлаш"
+  },
+  "home": {
+    "greeting": "Хуш келибсиз",
+    "today": "Бугун",
+    "stage_current": "Жорий босқич",
+    "prescription_today": "Бугунги рецепт"
+  },
+  "settings": {
+    "title": "Созламалар",
+    "variety": "Нав танлаш",
+    "mode_change": "Режимни ўзгартириш",
+    "language": "Тил",
+    "raw_water": "Хом сув"
+  },
+  "winter": {
+    "title": "Мавсумий коэффициент",
+    "summer_mode": "Ёз режими",
+    "winter_mode": "Қиш режими",
+    "summer_desc": "Юқори ҳарорат (32°C) — ЭЎ −0.2",
+    "winter_desc": "Қиш коэффициенти — ×0.85",
+    "factor": "×{{factor}}"
   }
 }

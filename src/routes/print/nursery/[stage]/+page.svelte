@@ -17,7 +17,7 @@
 
 <div class="bg-white text-black min-h-screen p-8 max-w-3xl mx-auto font-sans">
   {#if !stage || !result}
-    <p>Stage not found</p>
+    <p>{$t('label.stage_not_found')}</p>
   {:else}
   <div class="border-b-4 border-green-600 pb-4 mb-6">
     <div class="flex items-center justify-between">

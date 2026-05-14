@@ -53,8 +53,8 @@ export const STAGES_NURSERY: Stage[] = [
   {
     id: 'S3', label: 'stage.nursery.s3', mode: 'nursery',
     ecMin: 0.8, ecMax: 1.0, dates: '7/23~8/14', days: '23',
-    // v4.3: PK 자묘+화아분화 — N 55% 감량, P 1.5로 상승 (김대영 2013)
-    target: { NO3: 4.0, NH4: 0.3, K: 5.0, Ca: 3.0, Mg: 1.5, H2PO4: 1.5, SO4: 1.2, ...STD_MICRO },
+    // v4.3: PK 자묘+화아분화 — N 55% 감량, P 1.5로 상승 (김대영 2013); Ca 3.5 (K/Ca 1.43 유지, G1 안전)
+    target: { NO3: 4.0, NH4: 0.3, K: 5.0, Ca: 3.5, Mg: 1.5, H2PO4: 1.5, SO4: 1.2, ...STD_MICRO },
   },
   {
     id: 'S4', label: 'stage.nursery.s4', mode: 'nursery',

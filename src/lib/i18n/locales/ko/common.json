@@ -8,12 +8,19 @@
     "main": "본격재배",
     "nursery": "육묘장",
     "main_desc": "9월~5월 · S1~S4",
-    "nursery_desc": "6월~8월 · S0~S5-3"
+    "nursery_desc": "6월~8월 · S0~S5-3",
+    "select_variety": "품종을 먼저 선택하세요",
+    "confirmed": "모드 확정"
   },
   "nav": {
     "back": "뒤로",
     "print": "인쇄",
-    "stages": "단계 목록"
+    "stages": "단계 목록",
+    "home": "홈",
+    "rx": "처방",
+    "guide": "가이드",
+    "log": "기록",
+    "settings": "설정"
   },
   "tank": {
     "a": "탱크 A",
@@ -43,7 +50,8 @@
     "edit_raw": "원수 편집",
     "ions": "이온 농도",
     "reset_raw": "기본값 복원",
-    "acid_dilution": "원액 1:100 희석 필수"
+    "acid_dilution": "원액 1:100 희석 필수",
+    "stage_not_found": "단계를 찾을 수 없습니다"
   },
   "warning": {
     "no3_shortfall": "NO₃ {{delta}} mmol/L 부족 — 고HCO₃ K 상한 제약",
@@ -71,5 +79,41 @@
     "mnso4": "황산망간",
     "cuso4": "황산구리",
     "na2moo4": "몰리브덴산나트륨"
+  },
+  "variety": {
+    "title": "딸기 품종",
+    "seolhyang": "설향",
+    "maehyang": "매향",
+    "kuemsil": "금실",
+    "daehong": "대홍",
+    "other": "기타"
+  },
+  "focus": {
+    "title": "재배 목적",
+    "balanced": "균형 (표준)",
+    "high_yield": "고수량",
+    "quality": "고품질",
+    "rooting": "활착 강화"
+  },
+  "home": {
+    "greeting": "안녕하세요",
+    "today": "오늘",
+    "stage_current": "현재 단계",
+    "prescription_today": "오늘의 처방"
+  },
+  "settings": {
+    "title": "설정",
+    "variety": "품종 선택",
+    "mode_change": "모드 변경",
+    "language": "언어",
+    "raw_water": "원수 정보"
+  },
+  "winter": {
+    "title": "계절 계수",
+    "summer_mode": "여름 모드",
+    "winter_mode": "겨울 모드",
+    "summer_desc": "고온 감지 (32°C) — EC −0.2",
+    "winter_desc": "겨울 계수 적용 — ×0.85",
+    "factor": "×{{factor}}"
   }
 }
