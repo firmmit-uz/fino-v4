@@ -1,1 +1,51 @@
 @import 'tailwindcss';
+
+/* ── FIRMMIT Design Tokens ─────────────────────────────────── */
+@theme {
+  /* Brand */
+  --color-brand:        #3365FF;
+  --color-brand-deep:   #1E3FA8;
+  --color-brand-light:  #D6E0FF;
+  --color-brand-surface:#EEF3FF;
+
+  /* Nursery green */
+  --color-nursery:       #16A34A;
+  --color-nursery-deep:  #14532D;
+  --color-nursery-light: #D1FAE5;
+  --color-nursery-surface:#ECFDF5;
+
+  /* Semantic */
+  --color-amber:        #E6A817;
+  --color-amber-light:  #FFF6E0;
+  --color-amber-deep:   #8A5D00;
+  --color-danger:       #F25555;
+  --color-danger-light: #FEE8E8;
+  --color-danger-deep:  #B8322F;
+
+  /* Tank */
+  --color-tank-a:       #3365FF;
+  --color-tank-a-bg:    #EEF3FF;
+  --color-tank-b:       #2A7FFA;
+  --color-tank-b-bg:    #E0EEFF;
+  --color-tank-c:       #E6A817;
+  --color-tank-c-bg:    #FFF6E0;
+
+  /* Ink scale */
+  --color-ink:          #292C34;
+  --color-ink2:         #4A4E5A;
+  --color-ink3:         #9898A0;
+  --color-ink4:         #C5C5CC;
+
+  /* Surface */
+  --color-bg:           #F5F7FB;
+  --color-card:         #FFFFFF;
+  --color-border:       #E4E7EF;
+  --color-hairline:     #EEF0F5;
+
+  /* Typography */
+  --font-sans: 'Pretendard', 'Noto Sans KR', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+/* ── Global base ───────────────────────────────────────────── */
+html, body { font-family: var(--font-sans); }

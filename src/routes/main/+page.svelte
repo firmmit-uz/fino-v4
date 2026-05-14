@@ -1,34 +1,33 @@
 <script lang="ts">
+  import { goto } from '$app/navigation';
   import { t } from '$lib/i18n/index.js';
   import { STAGES_MAIN } from '$lib/engine/stages.js';
-  import { goto } from '$app/navigation';
+  import TopBar from '$lib/components/TopBar.svelte';
+  import StagePill from '$lib/components/StagePill.svelte';
 </script>
 
-<div class="min-h-screen bg-slate-900 text-white">
-  <div class="bg-gradient-to-b from-blue-900 to-slate-900 px-4 pt-10 pb-6">
-    <button onclick={() => goto('/')} class="text-blue-300 text-sm mb-4 flex items-center gap-1">← {$t('nav.back')}</button>
-    <div class="text-2xl font-bold">🍓 {$t('mode.main')}</div>
-    <div class="text-blue-300 text-sm mt-1">{$t('mode.main_desc')}</div>
-  </div>
+<div class="min-h-screen bg-bg pb-8">
+  <TopBar mode="main" onBack={() => goto('/')} />
 
-  <div class="px-4 py-4 flex flex-col gap-3 max-w-lg mx-auto">
-    {#each STAGES_MAIN as stage}
-      <button
-        onclick={() => goto(`/main/${stage.id}`)}
-        class="w-full bg-slate-800 border border-slate-700 rounded-xl p-4 text-left hover:border-blue-500 transition-colors"
-      >
-        <div class="flex items-center justify-between">
-          <div>
-            <div class="text-lg font-bold">{$t(stage.label, 'stages')}</div>
-            <div class="text-slate-400 text-sm mt-1">EC {stage.ecMin}–{stage.ecMax} {$t('unit.ms_cm')}</div>
+  <div class="px-4 py-4">
+    <div class="text-xl font-bold text-ink mb-1">🍓 {$t('mode.main')}</div>
+    <div class="text-sm text-ink3 mb-4">{$t('mode.main_desc')}</div>
+
+    <div class="flex flex-col gap-3">
+      {#each STAGES_MAIN as stage}
+        <button onclick={() => goto(`/main/${stage.id}`)}
+          class="bg-card rounded-2xl border border-hairline p-4 text-left
+                 hover:border-brand/40 active:scale-98 transition-all">
+          <div class="flex items-center justify-between mb-2">
+            <StagePill id={stage.id} active color="var(--color-brand)" bgColor="var(--color-brand-surface)" />
+            <span class="text-xs text-ink3">EC {stage.ecMin}–{stage.ecMax} {$t('unit.ms_cm')}</span>
           </div>
-          <div class="text-right">
-            <div class="text-xs text-slate-500">NO₃ {stage.target.NO3} · K {stage.target.K}</div>
-            <div class="text-xs text-slate-500">Ca {stage.target.Ca} · Mg {stage.target.Mg}</div>
-            <div class="text-blue-400 text-lg mt-1">→</div>
+          <div class="text-base font-bold text-ink">{$t(stage.label, 'stages')}</div>
+          <div class="text-xs text-ink3 mt-1">
+            NO₃ {stage.target.NO3} · K {stage.target.K} · Ca {stage.target.Ca} · H₂PO₄ {stage.target.H2PO4}
           </div>
-        </div>
-      </button>
-    {/each}
+        </button>
+      {/each}
+    </div>
   </div>
 </div>
