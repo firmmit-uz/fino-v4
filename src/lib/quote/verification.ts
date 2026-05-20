@@ -14,19 +14,19 @@ export interface VerificationRow {
   note?: string;
 }
 
-// §5.2 명시값
+// §5.2 명시값 (강석문 .xlsm 자재산출 시트 직접 추출)
 export const KSM_EXPECTED = {
   area: 3360,
   pyeong: 1017,
   spanCount: 5,
   columnRows: 6,
-  columnsPerRow: 33,
+  columnsPerRow: 37,        // 강석문 .xlsm R35 = 37 (= 33+4 출입문 보강)
   innerColumns: 128,
-  mainColumnsTotal: 222,    // 기둥 222본
-  midRailCount: 185,        // 중방 185본
+  mainColumnsTotal: 222,    // 기둥 BOM 222본 (= 6 × 37)
+  midRailCount: 185,        // 중방 185본 (= 5 × 37)
   tClampCount: 454,         // T크램프 454개
-  rafterLength: 8.2,        // 강석문 카탈로그 (FM-206 8.2m, 수식과 0.1~0.2m 차이)
-  steelTotal: 67_081_630,   // 철골자재 합계 (참고)
+  rafterLength: 8.2,        // 강석문 카탈로그 (FM-206 8.2m)
+  steelTotal: 67_081_630,   // 철골자재 합계
   houseConstructionSubtotal: 207_988_127,  // 하우스 순공사비
   houseFinalTotal: 256_740_000,            // 하우스 총 견적
 };
@@ -73,21 +73,23 @@ export function verifyKsmBaseline(): VerificationRow[] {
 
   const rows: VerificationRow[] = [
     row('면적 (㎡)',            KSM_EXPECTED.area,             q.area, 0),
-    row('평수',                 KSM_EXPECTED.pyeong,           Math.ceil(q.pyeong), 0,
-        '면적/3.3058 = 1016.39 → 강석문 ROUNDUP → 1017'),
+    row('평수',                 KSM_EXPECTED.pyeong,           q.pyeong, 0,
+        'CEIL(면적/3.3058) = 1017'),
     row('동수',                 KSM_EXPECTED.spanCount,        q.spanCount, 0),
     row('기둥줄',               KSM_EXPECTED.columnRows,       q.columnRows, 0),
     row('기둥칸',               KSM_EXPECTED.columnsPerRow,    q.columnsPerRow, 0),
-    row('전후면(gable) 기둥',   24,                            q.endFacePosts, 0,
-        '222 − 6×33 = 24 = 2 × ROUND(35/3) (가설)'),
+    row('전후면(gable) 기둥 보강', 24,                          q.endFacePosts, 0,
+        'columnRows × 4 출입문 보강'),
     row('주기둥 총수 (FM-201)', KSM_EXPECTED.mainColumnsTotal, q.mainColumnsTotal, 0,
-        '6×33 + 24 = 222'),
-    row('셋기둥 (FM-202)',      KSM_EXPECTED.innerColumns,     q.innerColumns, 0),
+        '6 × 37 = 222 (강석문 .xlsm 자재산출 직접 매핑)'),
+    row('측면셋기둥 (FM-202)',  KSM_EXPECTED.innerColumns,     q.innerColumns, 0,
+        '4 × 32 = 128 (= 4 × CEIL(L/pitch))'),
     row('중방 (FM-203)',        KSM_EXPECTED.midRailCount,     q.midRailCount, 0,
-        '5 × (33+4) = 185 — 동당 보강 4 (가설)'),
-    row('T크램프',              KSM_EXPECTED.tClampCount,      q.tClampCount, 0),
-    row('서까래 길이 (m)',      KSM_EXPECTED.rafterLength,     q.rafterLength, 0.2,
-        '강석문 카탈로그 8.2m vs 수식 4+(3.5×1.15)=8.025 → ROUNDUP 0.1=8.1'),
+        '5 × 37 = 185'),
+    row('T크램프',              KSM_EXPECTED.tClampCount,      q.tClampCount, 0,
+        '454 = 222 + 74 + 128 + 8 + 20 + 2 (보·중방·셋기둥·출입문·전후면보강·여유)'),
+    row('서까래 길이 (m)',      KSM_EXPECTED.rafterLength,     q.rafterLength, 0.01,
+        '4 + 3.5 × 1.20 = 8.2 (R=0.20)'),
   ];
 
   // 금액 비교 — 카탈로그가 부분적이라 정확 일치 어려움 (참고용)
