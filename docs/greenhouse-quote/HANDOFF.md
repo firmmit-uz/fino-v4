@@ -13,15 +13,17 @@
 | 경로 | 역할 |
 |------|------|
 | `src/lib/quote/types.ts` | `QuoteInput`, `Quantities`, `BomLine`, `CostBreakdown`, `Quote` |
-| `src/lib/quote/materials.ts` | 핵심 자재 카탈로그 (~24품목, FM-NNN 코드) |
+| `src/lib/quote/materials.ts` | 자재 카탈로그 (~37품목, FM-NNN 코드) |
 | `src/lib/quote/calc.ts` | §3.7 수량 산출 + §3.6 원가계산 파이프라인 |
 | `src/lib/quote/defaults.ts` | `KSM_BASELINE` (3,360㎡) + `NUKUS_PRESET` (2ha) |
 | `src/lib/quote/calc.spec.ts` | 골든 테스트 19개 (수량·BOM·원가) |
 | `src/lib/quote/store.ts` | Svelte 스토어 + localStorage 영속화 |
+| `src/lib/quote/history.ts` | 견적 발행번호 (FM-YYYY-NNNN) + 이력 CRUD |
 | `src/lib/quote/labels.ts` | 카테고리 다국어 라벨 (ko/en/ru/uz/uzc) |
-| `src/routes/quote/+page.svelte` | 입력 폼 + 실시간 결과 |
+| `src/routes/quote/+page.svelte` | 입력 폼 + 실시간 결과 + 저장 다이얼로그 |
 | `src/routes/quote/bom/+page.svelte` | 자재명세서 (BOM) 테이블 |
 | `src/routes/quote/print/+page.svelte` | A4 견적서 출력 (`window.print()`) |
+| `src/routes/quote/history/+page.svelte` | 견적 이력 + 불러오기/삭제 |
 
 ### 검증된 동작 (§5.2 강석문 베이스라인)
 

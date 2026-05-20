@@ -4,6 +4,7 @@
   import { formatCurrency, formatNumber } from '$lib/quote/calc.js';
   import { categoryLabel } from '$lib/quote/labels.js';
   import { langStore } from '$lib/i18n/index.js';
+  import { saveQuote, generateQuoteNumber } from '$lib/quote/history.js';
   import type { Currency } from '$lib/quote/types.js';
   import SectionLabel from '$lib/components/SectionLabel.svelte';
 
@@ -15,6 +16,28 @@
   function num(e: Event): number {
     const v = (e.target as HTMLInputElement).valueAsNumber;
     return Number.isFinite(v) ? v : 0;
+  }
+
+  // 견적 저장 다이얼로그
+  let showSaveDialog = $state(false);
+  let saveClient = $state('');
+  let saveProject = $state('');
+  let saveNotes = $state('');
+  const nextId = $derived(generateQuoteNumber());
+
+  function commitSave(): void {
+    if (!saveClient.trim() && !saveProject.trim()) {
+      alert('고객명 또는 프로젝트명을 입력하세요.');
+      return;
+    }
+    const saved = saveQuote($quoteInput, {
+      clientName: saveClient.trim(),
+      projectName: saveProject.trim(),
+      notes: saveNotes.trim(),
+    });
+    showSaveDialog = false;
+    saveClient = ''; saveProject = ''; saveNotes = '';
+    alert(`✅ ${saved.id} 저장 완료`);
   }
 </script>
 
@@ -261,11 +284,64 @@
 <div class="grid grid-cols-2 gap-2 mt-4">
   <button onclick={() => goto('/quote/bom')}
     class="py-3 rounded-xl bg-white border border-brand text-brand font-bold hover:bg-brand-surface">
-    📋 자재명세서 보기
+    📋 자재명세서
   </button>
   <button onclick={() => goto('/quote/print')}
     class="py-3 rounded-xl text-white font-bold"
     style="background:var(--color-brand)">
     🖨 견적서 출력
   </button>
+  <button onclick={() => (showSaveDialog = true)}
+    class="py-3 rounded-xl bg-white border border-hairline text-ink font-bold hover:bg-hairline">
+    💾 견적 저장
+  </button>
+  <button onclick={() => goto('/quote/history')}
+    class="py-3 rounded-xl bg-white border border-hairline text-ink font-bold hover:bg-hairline">
+    📚 견적 이력
+  </button>
 </div>
+
+<!-- 저장 다이얼로그 -->
+{#if showSaveDialog}
+  <div role="dialog" aria-modal="true"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4"
+    style="background:rgba(15,23,42,0.5)">
+    <div class="bg-white rounded-2xl w-full max-w-md p-5 shadow-xl">
+      <div class="flex items-baseline justify-between mb-3">
+        <div class="font-black text-lg">견적 저장</div>
+        <div class="font-mono text-xs text-ink3">{nextId}</div>
+      </div>
+      <div class="space-y-3">
+        <label class="block">
+          <div class="text-xs font-semibold text-ink2 mb-1">고객명 / Client</div>
+          <input type="text" bind:value={saveClient}
+            placeholder="예: 누쿠스 농업 회사"
+            class="w-full px-3 py-2 rounded-lg border border-border bg-bg text-ink" />
+        </label>
+        <label class="block">
+          <div class="text-xs font-semibold text-ink2 mb-1">프로젝트명 / Project</div>
+          <input type="text" bind:value={saveProject}
+            placeholder="예: Nukus 2ha Greenhouse"
+            class="w-full px-3 py-2 rounded-lg border border-border bg-bg text-ink" />
+        </label>
+        <label class="block">
+          <div class="text-xs font-semibold text-ink2 mb-1">비고 / Notes</div>
+          <textarea bind:value={saveNotes} rows={3}
+            placeholder="회의 결정사항·특이사항 등"
+            class="w-full px-3 py-2 rounded-lg border border-border bg-bg text-ink"></textarea>
+        </label>
+      </div>
+      <div class="grid grid-cols-2 gap-2 mt-4">
+        <button onclick={() => (showSaveDialog = false)}
+          class="py-2 rounded-lg border border-hairline bg-white text-sm font-semibold">
+          취소
+        </button>
+        <button onclick={commitSave}
+          class="py-2 rounded-lg text-white text-sm font-bold"
+          style="background:var(--color-brand)">
+          저장
+        </button>
+      </div>
+    </div>
+  </div>
+{/if}

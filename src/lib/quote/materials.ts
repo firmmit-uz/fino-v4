@@ -160,6 +160,89 @@ export const MATERIALS: MaterialItem[] = [
     name: '컨테이너 운송', spec: '40ft / 대',
     unit: '대', priceKrw: 13000000,
   },
+
+  // ── 철골자재 확장 (선택적 — 두께 2.1t 옵션) ─────────────────
+  {
+    id: 'FM-211', category: 'steel',
+    name: '기둥', spec: '60×60×2.1t × 5m',
+    unit: '본', priceKrw: 32760,
+  },
+  {
+    id: 'FM-212', category: 'steel',
+    name: '측면셋기둥', spec: '60×60×2.1t × 4.8m',
+    unit: '본', priceKrw: 31450,
+  },
+  {
+    id: 'FM-213', category: 'steel',
+    name: '중방', spec: '60×60×2.1t × 7m',
+    unit: '본', priceKrw: 52920,
+  },
+
+  // ── 부속자재 확장 ──────────────────────────────────────
+  {
+    id: 'FM-310', category: 'parts',
+    name: '서까래 고정구', spec: 'Ø31.8 → 60각 연결',
+    unit: '개', priceKrw: 1850,
+    laborRate: 0.4,
+  },
+  {
+    id: 'FM-311', category: 'parts',
+    name: '결로받이 라운드', spec: 'Ø25 × 6m',
+    unit: '본', priceKrw: 8400,
+    laborRate: 0.35,
+  },
+  {
+    id: 'FM-312', category: 'parts',
+    name: '비닐 패드 (롤업용)', spec: '폭 50mm × 100m',
+    unit: '롤', priceKrw: 28000,
+    laborRate: 0.20,
+  },
+  {
+    id: 'FM-313', category: 'parts',
+    name: '비닐 압착스프링', spec: 'Z형, 2m',
+    unit: '개', priceKrw: 950,
+    laborRate: 0.40,
+  },
+
+  // ── 피복 확장 ────────────────────────────────────────
+  {
+    id: 'FM-410', category: 'cover',
+    name: '측면 PE 비닐', spec: '0.10mm × 2.5m',
+    unit: '㎡', priceKrw: 900,
+    laborRate: 0.25,
+  },
+  {
+    id: 'FM-411', category: 'cover',
+    name: '결로방지 PO 필름', spec: '5겹 0.15mm',
+    unit: '㎡', priceKrw: 2100,
+    laborRate: 0.30,
+  },
+
+  // ── 환기·개폐 확장 ─────────────────────────────────────
+  {
+    id: 'FM-A03', category: 'vent',
+    name: '천창 개폐모터', spec: 'AC 220V, 50W',
+    unit: '대', priceKrw: 420000,
+    laborRate: 0.40,
+  },
+  {
+    id: 'FM-A04', category: 'vent',
+    name: '리미트 스위치', spec: '천창·측창용',
+    unit: '개', priceKrw: 35000,
+    laborRate: 0.30,
+  },
+
+  // ── 콘트롤 확장 ────────────────────────────────────────
+  {
+    id: 'FM-B02', category: 'control',
+    name: '온습도 센서', spec: 'SHT30, IP65',
+    unit: '개', priceKrw: 280000,
+  },
+  {
+    id: 'FM-B03', category: 'control',
+    name: '회로 증설 모듈', spec: '4채널 추가',
+    unit: '식', priceKrw: 1200000,
+  },
 ];
 
 export const MATERIAL_BY_ID: Record<string, MaterialItem> = Object.fromEntries(
