@@ -4,6 +4,7 @@
 export type Currency = 'KRW' | 'USD' | 'UZS';
 
 export type Category =
+  // === 하우스 공사 (house) ===
   | 'foundation'   // 1. 기초공사
   | 'steel'        // 2. 철골자재
   | 'parts'        // 3. 부속자재
@@ -14,8 +15,25 @@ export type Category =
   | 'end_curtain'  // 8. 전후면수직커튼
   | 'vent'         // 10. 개폐·환기
   | 'control'      // 11. 콘트롤박스
-  | 'boiler'       // 보일러 (FIRMMIT 추가)
+  // === 양액시설 (irrigation) ===
+  | 'irrigation'   // 양액 탱크·펌프·베드·점적
+  // === 환경제어시설 (env_control) ===
+  | 'env_control'  // 컨트롤러·센서·CO2
+  // === FIRMMIT 추가 ===
+  | 'boiler'       // 보일러
   | 'extra';       // 운송·슈퍼바이저 등
+
+// 시설 그룹 (3대 분류 §3.4)
+export type FacilityGroup = 'house' | 'irrigation' | 'env_control';
+
+export const CATEGORY_TO_GROUP: Record<Category, FacilityGroup | 'extras'> = {
+  foundation: 'house', steel: 'house', parts: 'house', cover: 'house',
+  shade: 'house', thermal: 'house', side_curtain: 'house', end_curtain: 'house',
+  vent: 'house', control: 'house',
+  irrigation: 'irrigation',
+  env_control: 'env_control',
+  boiler: 'extras', extra: 'extras',
+};
 
 export interface MaterialItem {
   id: string;            // FM-NNN
@@ -48,6 +66,12 @@ export interface QuoteInput {
   boilerSets: number;           // 보일러 세트 수
   superVisorMonths: number;     // 슈퍼바이저 개월
   containerCount: number;       // 컨테이너 대수
+
+  // 양액·환경제어 (§3.4)
+  enableIrrigation: boolean;    // 양액시설 ON/OFF
+  irrigationArea?: number;      // 양액 적용 면적 (㎡, 기본 = area)
+  enableEnvControl: boolean;    // 환경제어시설 ON/OFF
+  envControlChannels: number;   // 채널 수 (천창·측창 등)
 
   // 마진·환율·세금
   marginRate: number;           // 마진율 (예: 0.30)
@@ -119,18 +143,29 @@ export interface CostBreakdown {
   grandTotal: number;          // 최종
 }
 
+// 시설 그룹별 견적 (§3.4 — 하우스 / 양액 / 환경제어)
+export interface GroupQuote {
+  group: FacilityGroup;
+  categories: CategorySubtotal[];
+  cost: CostBreakdown;
+}
+
 export interface Quote {
   input: QuoteInput;
   quantities: Quantities;
   bom: BomLine[];
+  // 하위 호환 (기존 단일 시설 뷰)
   categories: CategorySubtotal[];
   cost: CostBreakdown;
+  // 신규 — 3대 분류
+  groups: GroupQuote[];
   extras: {
     boiler: number;
     supervisor: number;
     container: number;
     margin: number;
   };
+  facilitiesTotal: number; // 3그룹 합계 (마진 적용 전)
   finalKrw: number;
   finalDisplay: number;    // in selected currency
   displayCurrency: Currency;

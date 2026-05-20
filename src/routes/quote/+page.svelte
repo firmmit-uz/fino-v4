@@ -2,7 +2,7 @@
   import { goto } from '$app/navigation';
   import { quoteInput, quoteResult, applyPreset, resetQuote } from '$lib/quote/store.js';
   import { formatCurrency, formatNumber } from '$lib/quote/calc.js';
-  import { categoryLabel } from '$lib/quote/labels.js';
+  import { categoryLabel, groupLabel } from '$lib/quote/labels.js';
   import { langStore } from '$lib/i18n/index.js';
   import { saveQuote, generateQuoteNumber } from '$lib/quote/history.js';
   import type { Currency } from '$lib/quote/types.js';
@@ -136,6 +136,8 @@
     { key: 'enableSideCurtain', label: '측면 수직커튼' },
     { key: 'enableEndCurtain', label: '전후면 수직커튼' },
     { key: 'enableBoiler', label: '가스 보일러' },
+    { key: 'enableIrrigation', label: '양액시설' },
+    { key: 'enableEnvControl', label: '환경제어시설' },
   ] as opt}
     <label class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-hairline cursor-pointer">
       <input type="checkbox"
@@ -147,14 +149,24 @@
   {/each}
 </div>
 
-{#if $quoteInput.enableBoiler}
-  <div class="rounded-2xl bg-white border border-hairline p-4 mt-2">
-    <label class="block">
-      <div class="text-xs font-semibold text-ink2 mb-1">보일러 세트 수</div>
-      <input type="number" min="1" max="10" value={$quoteInput.boilerSets}
-        oninput={(e) => updateInput('boilerSets', num(e))}
-        class="w-full px-3 py-2 rounded-lg border border-border bg-bg text-ink font-mono" />
-    </label>
+{#if $quoteInput.enableBoiler || $quoteInput.enableEnvControl}
+  <div class="rounded-2xl bg-white border border-hairline p-4 mt-2 grid grid-cols-2 gap-3">
+    {#if $quoteInput.enableBoiler}
+      <label class="block">
+        <div class="text-xs font-semibold text-ink2 mb-1">보일러 세트 수</div>
+        <input type="number" min="1" max="10" value={$quoteInput.boilerSets}
+          oninput={(e) => updateInput('boilerSets', num(e))}
+          class="w-full px-3 py-2 rounded-lg border border-border bg-bg text-ink font-mono" />
+      </label>
+    {/if}
+    {#if $quoteInput.enableEnvControl}
+      <label class="block">
+        <div class="text-xs font-semibold text-ink2 mb-1">제어 채널 수</div>
+        <input type="number" min="0" max="64" value={$quoteInput.envControlChannels}
+          oninput={(e) => updateInput('envControlChannels', num(e))}
+          class="w-full px-3 py-2 rounded-lg border border-border bg-bg text-ink font-mono" />
+      </label>
+    {/if}
   </div>
 {/if}
 
@@ -212,29 +224,28 @@
   </label>
 </div>
 
-<!-- ── 결과 — 카테고리 소계 ────────────────────────── -->
-<SectionLabel text="공정별 소계" count={$quoteResult.categories.length} />
-<div class="rounded-2xl bg-white border border-hairline overflow-hidden">
-  <table class="w-full text-sm">
-    <thead class="bg-hairline">
-      <tr class="text-left text-ink3">
-        <th class="px-3 py-2 font-semibold">공정</th>
-        <th class="px-3 py-2 font-semibold text-right">재료비</th>
-        <th class="px-3 py-2 font-semibold text-right">노무비</th>
-        <th class="px-3 py-2 font-semibold text-right">소계</th>
-      </tr>
-    </thead>
-    <tbody>
-      {#each $quoteResult.categories as cat}
-        <tr class="border-t border-hairline">
-          <td class="px-3 py-2 font-medium">{categoryLabel(cat.category, $langStore)}</td>
-          <td class="px-3 py-2 text-right font-mono text-ink2">{formatNumber(cat.material)}</td>
-          <td class="px-3 py-2 text-right font-mono text-ink2">{formatNumber(cat.labor)}</td>
-          <td class="px-3 py-2 text-right font-mono font-semibold">{formatNumber(cat.subtotal)}</td>
-        </tr>
-      {/each}
-    </tbody>
-  </table>
+<!-- ── 결과 — 시설 그룹 합계 (3대 분류 §3.4) ────────────────── -->
+<SectionLabel text="시설별 합계" count={$quoteResult.groups.length} />
+<div class="space-y-2">
+  {#each $quoteResult.groups as g}
+    <div class="rounded-2xl bg-white border border-hairline overflow-hidden">
+      <div class="px-4 py-2 flex justify-between items-baseline"
+           style="background:var(--color-brand-surface)">
+        <span class="font-bold text-ink">{groupLabel(g.group, $langStore)}</span>
+        <span class="font-mono font-bold text-brand">{formatNumber(g.cost.grandTotal)}</span>
+      </div>
+      <table class="w-full text-xs">
+        <tbody>
+          {#each g.categories as cat}
+            <tr class="border-t border-hairline">
+              <td class="px-3 py-1.5 text-ink2">{categoryLabel(cat.category, $langStore)}</td>
+              <td class="px-3 py-1.5 text-right font-mono">{formatNumber(cat.subtotal)}</td>
+            </tr>
+          {/each}
+        </tbody>
+      </table>
+    </div>
+  {/each}
 </div>
 
 <!-- ── 결과 — 원가계산서 요약 ────────────────────────── -->
@@ -267,11 +278,19 @@
 <!-- ── 결과 — 부대비용·마진 ────────────────────────── -->
 <SectionLabel text="부대비용·마진" />
 <div class="rounded-2xl bg-white border border-hairline p-4 space-y-2 text-sm">
-  <div class="flex justify-between"><span class="text-ink3">하우스 총액</span><span class="font-mono">{formatNumber($quoteResult.cost.grandTotal)}</span></div>
-  <div class="flex justify-between"><span class="text-ink3">+ 보일러</span><span class="font-mono">{formatNumber($quoteResult.extras.boiler)}</span></div>
-  <div class="flex justify-between"><span class="text-ink3">+ FIRMMIT 마진 ({Math.round($quoteInput.marginRate * 100)}%)</span><span class="font-mono">{formatNumber($quoteResult.extras.margin)}</span></div>
-  <div class="flex justify-between"><span class="text-ink3">+ 슈퍼바이저</span><span class="font-mono">{formatNumber($quoteResult.extras.supervisor)}</span></div>
-  <div class="flex justify-between"><span class="text-ink3">+ 컨테이너</span><span class="font-mono">{formatNumber($quoteResult.extras.container)}</span></div>
+  <div class="flex justify-between"><span class="text-ink3">시설 합계 (VAT 포함)</span><span class="font-mono">{formatNumber($quoteResult.facilitiesTotal)}</span></div>
+  {#if $quoteResult.extras.boiler > 0}
+    <div class="flex justify-between"><span class="text-ink3">+ 보일러</span><span class="font-mono">{formatNumber($quoteResult.extras.boiler)}</span></div>
+  {/if}
+  {#if $quoteResult.extras.margin > 0}
+    <div class="flex justify-between"><span class="text-ink3">+ FIRMMIT 마진 ({Math.round($quoteInput.marginRate * 100)}%)</span><span class="font-mono">{formatNumber($quoteResult.extras.margin)}</span></div>
+  {/if}
+  {#if $quoteResult.extras.supervisor > 0}
+    <div class="flex justify-between"><span class="text-ink3">+ 슈퍼바이저</span><span class="font-mono">{formatNumber($quoteResult.extras.supervisor)}</span></div>
+  {/if}
+  {#if $quoteResult.extras.container > 0}
+    <div class="flex justify-between"><span class="text-ink3">+ 컨테이너</span><span class="font-mono">{formatNumber($quoteResult.extras.container)}</span></div>
+  {/if}
   <div class="flex justify-between items-baseline pt-2 border-t border-hairline">
     <span class="text-ink font-bold">최종 견적</span>
     <span class="font-mono font-bold text-base" style="color:var(--color-brand)">

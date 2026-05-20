@@ -1,7 +1,13 @@
 // 카테고리 라벨 (다국어 — i18n 시스템 정착 전 임시 매핑)
-import type { Category } from './types.js';
+import type { Category, FacilityGroup } from './types.js';
 
 type LangCode = 'ko' | 'en' | 'ru' | 'uz' | 'uzc';
+
+const GROUP_LABELS: Record<FacilityGroup, Record<LangCode, string>> = {
+  house:       { ko: '하우스공사',     en: 'Greenhouse',       ru: 'Теплица',           uz: 'Issiqxona',          uzc: 'Иссиқхона' },
+  irrigation:  { ko: '양액시설',       en: 'Irrigation',       ru: 'Питательный р-р',   uz: 'Sug\'orish',         uzc: 'Суғориш' },
+  env_control: { ko: '환경제어시설',   en: 'Environment ctrl', ru: 'Климат-контроль',   uz: 'Iqlim nazorati',     uzc: 'Иқлим назорати' },
+};
 
 const CATEGORY_LABELS: Record<Category, Record<LangCode, string>> = {
   foundation:   { ko: '1. 기초공사',       en: '1. Foundation',      ru: '1. Фундамент',     uz: '1. Poydevor',       uzc: '1. Пойдевор' },
@@ -14,6 +20,8 @@ const CATEGORY_LABELS: Record<Category, Record<LangCode, string>> = {
   end_curtain:  { ko: '8. 전후면 수직커튼', en: '8. End curtain',     ru: '8. Торцевая завеса', uz: '8. Old parda',     uzc: '8. Олд парда' },
   vent:         { ko: '10. 개폐·환기',     en: '10. Vent / roll-up',  ru: '10. Вентиляция',    uz: '10. Shamollatish',  uzc: '10. Шамоллатиш' },
   control:      { ko: '11. 콘트롤박스',    en: '11. Control box',     ru: '11. Контроллер',    uz: '11. Boshqaruv',     uzc: '11. Бошқарув' },
+  irrigation:   { ko: '양액시설',          en: 'Irrigation',          ru: 'Питательный р-р',   uz: 'Sug\'orish',        uzc: 'Суғориш' },
+  env_control:  { ko: '환경제어',          en: 'Environment',         ru: 'Климат',            uz: 'Iqlim',             uzc: 'Иқлим' },
   boiler:       { ko: '보일러',            en: 'Boiler',              ru: 'Котёл',             uz: 'Qozon',             uzc: 'Қозон' },
   extra:        { ko: '부대비용',          en: 'Extras',              ru: 'Дополнительно',     uz: 'Qo\'shimcha',       uzc: 'Қўшимча' },
 };
@@ -28,4 +36,8 @@ function langKey(lng: string): LangCode {
 
 export function categoryLabel(cat: Category, lng: string): string {
   return CATEGORY_LABELS[cat][langKey(lng)];
+}
+
+export function groupLabel(group: FacilityGroup, lng: string): string {
+  return GROUP_LABELS[group][langKey(lng)];
 }

@@ -23,6 +23,10 @@ export const KSM_BASELINE: QuoteInput = {
   superVisorMonths: 0,
   containerCount: 0,
 
+  enableIrrigation: true,        // 강석문 .xlsm에 양액시설 포함됨 (§3.4)
+  enableEnvControl: true,        // 강석문 .xlsm에 환경제어 포함됨 (§3.4)
+  envControlChannels: 32,        // 강석문 §3.5: 천창 10 + 측창 4 + 전후 2 + ...
+
   marginRate: 0,
   generalAdminRate: 0.03,
   profitRate: 0.10,
@@ -51,6 +55,10 @@ export const NUKUS_PRESET: QuoteInput = {
   boilerSets: 2,
   superVisorMonths: 3,
   containerCount: 12,
+
+  enableIrrigation: false,       // 누쿠스는 자재만 (클라이언트 별도 시공)
+  enableEnvControl: false,
+  envControlChannels: 0,
 
   marginRate: 0.30,
   generalAdminRate: 0.03,

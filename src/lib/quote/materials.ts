@@ -243,6 +243,116 @@ export const MATERIALS: MaterialItem[] = [
     name: '회로 증설 모듈', spec: '4채널 추가',
     unit: '식', priceKrw: 1200000,
   },
+
+  // ═══════════════════════════════════════════════════════
+  // 양액시설 (irrigation) — §3.4 25% 비중
+  // ═══════════════════════════════════════════════════════
+  {
+    id: 'FM-IR01', category: 'irrigation',
+    name: '양액 원수탱크', spec: 'PE 5,000L',
+    unit: '개', priceKrw: 950000,
+    laborRate: 0.15,
+  },
+  {
+    id: 'FM-IR02', category: 'irrigation',
+    name: '양액 A탱크', spec: 'PE 1,000L',
+    unit: '개', priceKrw: 320000,
+    laborRate: 0.15,
+  },
+  {
+    id: 'FM-IR03', category: 'irrigation',
+    name: '양액 B탱크', spec: 'PE 1,000L',
+    unit: '개', priceKrw: 320000,
+    laborRate: 0.15,
+  },
+  {
+    id: 'FM-IR04', category: 'irrigation',
+    name: '양액 공급펌프', spec: '2HP, 인버터',
+    unit: '대', priceKrw: 1850000,
+    laborRate: 0.25,
+  },
+  {
+    id: 'FM-IR05', category: 'irrigation',
+    name: '양액 컨트롤러', spec: 'EC/pH 자동제어',
+    unit: '식', priceKrw: 4800000,
+    laborRate: 0.15,
+  },
+  {
+    id: 'FM-IR06', category: 'irrigation',
+    name: '점적 호스', spec: 'PE 16mm, 30cm 간격',
+    unit: 'm', priceKrw: 850,
+    laborRate: 0.50,
+  },
+  {
+    id: 'FM-IR07', category: 'irrigation',
+    name: '재배 베드', spec: '스티로폼 + 부직포',
+    unit: '㎡', priceKrw: 18000,
+    laborRate: 0.40,
+  },
+  {
+    id: 'FM-IR08', category: 'irrigation',
+    name: '회수 배관', spec: 'PVC 50A',
+    unit: 'm', priceKrw: 3200,
+    laborRate: 0.60,
+  },
+  {
+    id: 'FM-IR09', category: 'irrigation',
+    name: '주배관·분기', spec: 'PVC 75A + 솔레노이드',
+    unit: '식', priceKrw: 8500000,
+    laborRate: 0.40,
+  },
+  {
+    id: 'FM-IR10', category: 'irrigation',
+    name: '여과기', spec: '디스크 200메쉬',
+    unit: '대', priceKrw: 450000,
+    laborRate: 0.20,
+  },
+
+  // ═══════════════════════════════════════════════════════
+  // 환경제어시설 (env_control) — §3.4 11% 비중
+  // ═══════════════════════════════════════════════════════
+  {
+    id: 'FM-EC01', category: 'env_control',
+    name: '복합환경 컨트롤러', spec: 'TS-2500, 16ch',
+    unit: '식', priceKrw: 15000000,
+    laborRate: 0.10,
+  },
+  {
+    id: 'FM-EC02', category: 'env_control',
+    name: '센서 박스', spec: '온/습/CO₂/일사',
+    unit: '식', priceKrw: 2800000,
+    laborRate: 0.15,
+  },
+  {
+    id: 'FM-EC03', category: 'env_control',
+    name: '광량 센서', spec: '쿼텀 PAR',
+    unit: '개', priceKrw: 850000,
+    laborRate: 0.10,
+  },
+  {
+    id: 'FM-EC04', category: 'env_control',
+    name: '풍향·풍속계', spec: '회전식 + 풍향계',
+    unit: '식', priceKrw: 1200000,
+    laborRate: 0.20,
+  },
+  {
+    id: 'FM-EC05', category: 'env_control',
+    name: 'CO₂ 공급기', spec: '액화 CO₂ 자동',
+    unit: '식', priceKrw: 5800000,
+    laborRate: 0.20,
+  },
+  {
+    id: 'FM-EC06', category: 'env_control',
+    name: '제어 채널 (개폐기 연동)', spec: '채널당 모터·릴레이',
+    unit: '채널', priceKrw: 320000,
+    laborRate: 0.30,
+  },
+  {
+    id: 'FM-EC07', category: 'env_control',
+    name: '제어반 케이블·배선', spec: '5.5sq + 트레이',
+    unit: 'm', priceKrw: 8500,
+    laborRate: 0.60,
+  },
 ];
 
 export const MATERIAL_BY_ID: Record<string, MaterialItem> = Object.fromEntries(

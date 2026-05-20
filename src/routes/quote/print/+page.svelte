@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { quoteInput, quoteResult } from '$lib/quote/store.js';
   import { formatCurrency, formatNumber } from '$lib/quote/calc.js';
-  import { categoryLabel } from '$lib/quote/labels.js';
+  import { categoryLabel, groupLabel } from '$lib/quote/labels.js';
   import { langStore } from '$lib/i18n/index.js';
 
   const today = new Date().toISOString().slice(0, 10);
@@ -88,34 +88,40 @@
     </tbody>
   </table>
 
-  <!-- 공정별 합계 -->
-  <div class="section-title">2. 공정별 견적 / Cost Breakdown</div>
-  <table class="cost-tbl">
-    <thead>
-      <tr>
-        <th>공정 / Category</th>
-        <th class="r">재료비</th>
-        <th class="r">노무비</th>
-        <th class="r">소계</th>
-      </tr>
-    </thead>
-    <tbody>
-      {#each $quoteResult.categories as cat}
+  <!-- 시설별 견적 -->
+  <div class="section-title">2. 시설별 견적 / Facilities Breakdown</div>
+  {#each $quoteResult.groups as g}
+    <table class="cost-tbl">
+      <thead>
         <tr>
-          <td>{categoryLabel(cat.category, $langStore)}</td>
-          <td class="r mono">{formatNumber(cat.material)}</td>
-          <td class="r mono">{formatNumber(cat.labor)}</td>
-          <td class="r mono b">{formatNumber(cat.subtotal)}</td>
+          <th colspan="2" class="group-head">{groupLabel(g.group, $langStore)}</th>
+          <th class="r">재료비</th>
+          <th class="r">노무비</th>
+          <th class="r">소계</th>
         </tr>
-      {/each}
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        {#each g.categories as cat}
+          <tr>
+            <td colspan="2">{categoryLabel(cat.category, $langStore)}</td>
+            <td class="r mono">{formatNumber(cat.material)}</td>
+            <td class="r mono">{formatNumber(cat.labor)}</td>
+            <td class="r mono b">{formatNumber(cat.subtotal)}</td>
+          </tr>
+        {/each}
+        <tr class="group-total">
+          <td colspan="4" class="r b">{groupLabel(g.group, $langStore)} 합계 (VAT 포함)</td>
+          <td class="r mono b">{formatNumber(g.cost.grandTotal)}</td>
+        </tr>
+      </tbody>
+    </table>
+  {/each}
 
   <!-- 최종 합계 -->
   <div class="section-title">3. 최종 견적 / Final Quote</div>
   <table class="total-tbl">
     <tbody>
-      <tr><th>하우스 공사 (VAT 포함)</th><td class="r mono">{formatNumber($quoteResult.cost.grandTotal)}</td></tr>
+      <tr><th>시설 합계 (VAT 포함)</th><td class="r mono">{formatNumber($quoteResult.facilitiesTotal)}</td></tr>
       {#if $quoteResult.extras.boiler > 0}
         <tr><th>보일러</th><td class="r mono">{formatNumber($quoteResult.extras.boiler)}</td></tr>
       {/if}
@@ -210,6 +216,8 @@
     font-size: 14px;
   }
   .total-tbl .ref { color: #94A3B8; font-size: 10px; }
+  .group-head { background: #EFF6FF; color: #1E40AF; text-align: left; }
+  .group-total td { background: #F8FAFC; }
 
   .terms { font-size: 11px; color: #64748B; line-height: 1.6; padding-left: 18px; margin-bottom: 12px; }
   .terms li { margin-bottom: 2px; }

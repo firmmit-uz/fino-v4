@@ -105,6 +105,40 @@ describe('FIRMMIT 견적 — 원가계산서 (§3.6)', () => {
   });
 });
 
+describe('FIRMMIT 견적 — 시설 그룹 분리 (§3.4)', () => {
+  it('KSM 베이스라인은 3개 그룹 모두 포함 (house + irrigation + env_control)', () => {
+    const ksm = calcQuote(KSM_BASELINE);
+    const groupKeys = ksm.groups.map(g => g.group);
+    expect(groupKeys).toContain('house');
+    expect(groupKeys).toContain('irrigation');
+    expect(groupKeys).toContain('env_control');
+  });
+
+  it('양액 OFF 시 irrigation 그룹 없음', () => {
+    const input = { ...KSM_BASELINE, enableIrrigation: false };
+    const q = calcQuote(input);
+    expect(q.groups.find(g => g.group === 'irrigation')).toBeUndefined();
+  });
+
+  it('환경제어 OFF 시 env_control 그룹 없음', () => {
+    const input = { ...KSM_BASELINE, enableEnvControl: false };
+    const q = calcQuote(input);
+    expect(q.groups.find(g => g.group === 'env_control')).toBeUndefined();
+  });
+
+  it('facilitiesTotal = 그룹들의 grandTotal 합', () => {
+    const ksm = calcQuote(KSM_BASELINE);
+    const sum = ksm.groups.reduce((s, g) => s + g.cost.grandTotal, 0);
+    expect(ksm.facilitiesTotal).toBeCloseTo(sum, 1);
+  });
+
+  it('하우스 그룹의 grandTotal = 기존 cost.grandTotal (호환성)', () => {
+    const ksm = calcQuote(KSM_BASELINE);
+    const house = ksm.groups.find(g => g.group === 'house');
+    expect(house?.cost.grandTotal).toBeCloseTo(ksm.cost.grandTotal, 1);
+  });
+});
+
 describe('FIRMMIT 견적 — 누쿠스 시나리오', () => {
   it('누쿠스 견적 총액은 KSM 베이스라인보다 큼 (면적 5.7배)', () => {
     const ksm = calcQuote(KSM_BASELINE);

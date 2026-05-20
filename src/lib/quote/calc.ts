@@ -3,8 +3,9 @@
 
 import type {
   QuoteInput, Quantities, BomLine, CategorySubtotal, CostBreakdown,
-  Quote, MaterialItem, Currency, Category,
+  Quote, MaterialItem, Currency, Category, FacilityGroup, GroupQuote,
 } from './types.js';
+import { CATEGORY_TO_GROUP } from './types.js';
 import { getMaterial } from './materials.js';
 
 // ── §3.7 자재 수량 산출 ────────────────────────────────────
@@ -112,6 +113,32 @@ export function buildBom(q: Quantities, input: QuoteInput): BomLine[] {
     push('FM-E03', 1);
   }
 
+  // 양액시설 (§3.4 25%)
+  if (input.enableIrrigation) {
+    const irrigArea = input.irrigationArea ?? q.area;
+    push('FM-IR01', 1);                              // 원수탱크
+    push('FM-IR02', 1);                              // A탱크
+    push('FM-IR03', 1);                              // B탱크
+    push('FM-IR04', Math.max(1, Math.ceil(irrigArea / 2000))); // 펌프 (2000㎡당)
+    push('FM-IR05', 1);                              // 컨트롤러
+    push('FM-IR06', Math.ceil(irrigArea * 1.2));     // 점적호스 (㎡당 1.2m)
+    push('FM-IR07', irrigArea);                      // 베드 (= 면적)
+    push('FM-IR08', q.perimeter);                    // 회수배관 (둘레)
+    push('FM-IR09', 1);                              // 주배관 일식
+    push('FM-IR10', Math.max(1, Math.ceil(irrigArea / 3000))); // 여과기
+  }
+
+  // 환경제어시설 (§3.4 11%)
+  if (input.enableEnvControl) {
+    push('FM-EC01', 1);                              // 컨트롤러
+    push('FM-EC02', 1);                              // 센서 박스
+    push('FM-EC03', Math.max(1, Math.ceil(q.area / 5000))); // 광량 센서
+    push('FM-EC04', 1);                              // 풍향풍속
+    push('FM-EC05', 1);                              // CO2
+    push('FM-EC06', input.envControlChannels);       // 제어 채널
+    push('FM-EC07', q.perimeter * 2);                // 케이블·배선
+  }
+
   return lines;
 }
 
@@ -136,16 +163,21 @@ export function rollupCategories(bom: BomLine[]): CategorySubtotal[] {
   return Array.from(map.values());
 }
 
-// ── §3.6 원가 계산서 파이프라인 (하우스 공사 한정) ──────────
+// ── §3.6 원가 계산서 파이프라인 (BOM 부분집합에 대해) ──────────
 export function computeCostBreakdown(
   bom: BomLine[],
   input: QuoteInput,
 ): CostBreakdown {
-  // 하우스 공사만 원가 파이프라인에 진입 (보일러/슈퍼바이저/컨테이너는 별도)
-  const houseBom = bom.filter(l => CONSTRUCTION_CATS.includes(l.category));
+  // 기본: 하우스 공사 카테고리만 (하위 호환)
+  return computeCostFor(bom.filter(l => CONSTRUCTION_CATS.includes(l.category)), input);
+}
 
-  const materialDirect = houseBom.reduce((s, l) => s + l.materialCost, 0);
-  const laborDirect    = houseBom.reduce((s, l) => s + l.laborCost,    0);
+function computeCostFor(
+  lines: BomLine[],
+  input: QuoteInput,
+): CostBreakdown {
+  const materialDirect = lines.reduce((s, l) => s + l.materialCost, 0);
+  const laborDirect    = lines.reduce((s, l) => s + l.laborCost,    0);
 
   // §3.6 공식
   const indirectLabor       = laborDirect * 0.03;
@@ -172,6 +204,22 @@ export function computeCostBreakdown(
   };
 }
 
+// ── 시설 그룹별 견적 ──────────────────────────────────────
+function computeGroups(bom: BomLine[], input: QuoteInput): GroupQuote[] {
+  const groups: FacilityGroup[] = ['house', 'irrigation', 'env_control'];
+  const result: GroupQuote[] = [];
+  for (const group of groups) {
+    const groupLines = bom.filter(l => CATEGORY_TO_GROUP[l.category] === group);
+    if (groupLines.length === 0) continue;
+    result.push({
+      group,
+      categories: rollupCategories(groupLines),
+      cost: computeCostFor(groupLines, input),
+    });
+  }
+  return result;
+}
+
 // ── 보일러·부대비용 (마진 적용 / 미적용 구분) ─────────────────
 function computeExtras(bom: BomLine[], input: QuoteInput): {
   boiler: number; supervisor: number; container: number; margin: number;
@@ -192,12 +240,18 @@ function computeExtras(bom: BomLine[], input: QuoteInput): {
 export function calcQuote(input: QuoteInput): Quote {
   const quantities = computeQuantities(input);
   const bom = buildBom(quantities, input);
-  const categories = rollupCategories(bom);
+
+  // 하위 호환: 하우스 단일 뷰
+  const categories = rollupCategories(bom.filter(l => CONSTRUCTION_CATS.includes(l.category)));
   const cost = computeCostBreakdown(bom, input);
 
-  // 마진 적용 대상: 하우스(공급가액) + 보일러 — 그 뒤 슈퍼바이저·컨테이너 추가
+  // 신규 §3.4: 3대 분류 (house / irrigation / env_control)
+  const groups = computeGroups(bom, input);
+  const facilitiesTotal = groups.reduce((s, g) => s + g.cost.grandTotal, 0);
+
+  // 마진 적용 대상: 전체 시설 + 보일러 — 그 뒤 슈퍼바이저·컨테이너 추가
   const extras = computeExtras(bom, input);
-  const marginBase = cost.grandTotal + extras.boiler;
+  const marginBase = facilitiesTotal + extras.boiler;
   const marginAmount = marginBase * input.marginRate;
   extras.margin = marginAmount;
 
@@ -210,7 +264,7 @@ export function calcQuote(input: QuoteInput): Quote {
   const finalKrw = finalInCurrency * krwUnit;
 
   return {
-    input, quantities, bom, categories, cost, extras,
+    input, quantities, bom, categories, cost, groups, extras, facilitiesTotal,
     finalKrw, finalDisplay: finalInCurrency, displayCurrency: input.currency,
   };
 }
