@@ -93,15 +93,28 @@ export function buildBom(q: Quantities, input: QuoteInput): BomLine[] {
   push('FM-206', q.rafterCount);                                // 1중 서까래
   push('FM-207', Math.ceil((q.area * (1 + input.rValue)) / 30));// 지붕가로대
 
-  // 부속자재
+  // §3.5 보강 부재 — 67M 갭 축소
+  push('FM-208', Math.ceil(q.spanCount * input.length / 6));        // 동마루 (동당)
+  push('FM-209', Math.ceil(Math.max(0, q.spanCount - 1) * input.length / 6)); // 결로받이 골 받이
+  push('FM-210', Math.ceil(2 * input.length / 6));                  // 처마 도리 (장변 2)
+  push('FM-214', 8 * Math.max(1, Math.floor(q.spanCount / 2)));     // 가새 (코너 × 동 일부)
+  push('FM-215', 2 * q.spanCount * Math.ceil(input.spanWidth / 3)); // 합각 가로대 (전후면)
+
+  // 부속자재 — §3.5 24.39M (T크램프·십자판·쌍꽂이 + 확장 부속)
   push('FM-301', q.tClampCount);                                // T크램프
-  push('FM-302', q.mainColumnsTotal);                           // 십자판 (= 주기둥수)
+  push('FM-302', q.mainColumnsTotal);                           // 십자판
   push('FM-303', q.rafterCount);                                // 1중 쌍꽂이
+  push('FM-310', q.rafterCount);                                // 서까래 고정구 (서까래당 1)
+  push('FM-311', Math.ceil((Math.max(0, q.spanCount - 1) * input.length) / 6)); // 결로받이 라운드
+  push('FM-312', Math.ceil(q.perimeter / 100) + Math.ceil(input.length / 50) * 2); // 비닐 패드 (롤업)
+  push('FM-313', Math.ceil(q.area * 0.3));                      // 비닐 압착스프링 (㎡당 0.3)
 
   // 피복공사 — 곡면 면적 = 면적 × (1 + R값)
   const coverArea = q.area * (1 + input.rValue);
   push('FM-401', coverArea);
   if (input.enable2ndCover) push('FM-402', coverArea);
+  // 측면 PE 비닐 (둘레 × 측고)
+  push('FM-410', q.perimeter * input.height);
 
   // 차광·보온
   if (input.enableShade)   push('FM-501', q.area);
@@ -117,9 +130,11 @@ export function buildBom(q: Quantities, input: QuoteInput): BomLine[] {
     push('FM-801', endArea);
   }
 
-  // 개폐·환기 — 천창 동수 × 1, 측창 4
-  push('FM-A01', q.spanCount);  // 천창 (동당 1)
-  push('FM-A02', 4);             // 측창 (양측 + 전후)
+  // 개폐·환기 — §3.5 5.89M
+  push('FM-A01', q.spanCount);                                  // 롤업 천창 (동당 1)
+  push('FM-A02', 4);                                             // 롤업 측창
+  push('FM-A03', q.spanCount + 2);                               // 개폐 모터 (천창 동수 + 측창 2)
+  push('FM-A04', 2 * (q.spanCount + 2));                         // 리미트 스위치 (모터당 상하 2)
 
   // 콘트롤박스
   push('FM-B01', 1);

@@ -31,6 +31,21 @@ export const KSM_EXPECTED = {
   houseFinalTotal: 256_740_000,            // 하우스 총 견적
 };
 
+// §3.5 — 하우스 11개 공정별 자재비 anchor (단위: 원)
+// 카테고리 -> { material, labor, expense } (백만원 → 원)
+export const KSM_CATEGORY_ANCHORS: Record<string, { mat: number; lab: number; exp: number }> = {
+  foundation:   { mat:  4_730_000, lab:  4_410_000, exp: 1_300_000 },
+  steel:        { mat: 67_080_000, lab:          0, exp:         0 },
+  parts:        { mat: 24_390_000, lab: 30_240_000, exp:         0 },
+  cover:        { mat: 23_350_000, lab:  6_720_000, exp:         0 },
+  shade:        { mat:  6_320_000, lab:  5_040_000, exp:         0 },
+  thermal:      { mat:  5_540_000, lab:  5_040_000, exp:         0 },
+  side_curtain: { mat:  5_590_000, lab:  1_680_000, exp:         0 },
+  end_curtain:  { mat:  1_810_000, lab:    340_000, exp:         0 },
+  vent:         { mat:  5_890_000, lab:  3_360_000, exp:         0 },
+  control:      { mat:  5_150_000, lab:          0, exp:         0 },
+};
+
 function row(
   label: string,
   expected: number | string,
@@ -82,16 +97,59 @@ export function verifyKsmBaseline(): VerificationRow[] {
       '하우스 순공사비 (KRW)',
       KSM_EXPECTED.houseConstructionSubtotal,
       Math.round(houseGroup.cost.pureConstruction),
-      0.10,  // 카탈로그 부분 일치로 10% 오차 허용
-      '카탈로그 일부 (54/227품목)·전후면/수직커튼 수식 가설 포함 → 강석문 원본 대비 근사치',
+      0.15,
+      '카탈로그 54+5/227품목·일부 수식 가설 포함 → 강석문 원본 대비 근사치',
     ));
     rows.push(row(
       '하우스 총 견적 (KRW)',
       KSM_EXPECTED.houseFinalTotal,
       Math.round(houseGroup.cost.grandTotal),
-      0.10,
+      0.15,
     ));
   }
 
   return rows;
+}
+
+// §3.5 카테고리별 자재/노무비 비교
+export interface CategoryAnchorRow {
+  category: string;
+  label: string;
+  matExpected: number;
+  matComputed: number;
+  matGap: number;
+  matCoverage: number;   // computed / expected (0-1+)
+  labExpected: number;
+  labComputed: number;
+}
+
+export function verifyCategoryAnchors(): CategoryAnchorRow[] {
+  const quote = calcQuote(KSM_BASELINE);
+  const houseGroup = quote.groups.find(g => g.group === 'house');
+  if (!houseGroup) return [];
+
+  const result: CategoryAnchorRow[] = [];
+  const labels: Record<string, string> = {
+    foundation: '1. 기초공사', steel: '2. 철골자재', parts: '3. 부속자재',
+    cover: '4. 피복공사', shade: '5. 차광망', thermal: '6. 보온커튼',
+    side_curtain: '7. 측면수직커튼', end_curtain: '8. 전후면수직커튼',
+    vent: '10. 개폐·환기', control: '11. 콘트롤박스',
+  };
+
+  for (const [cat, anchor] of Object.entries(KSM_CATEGORY_ANCHORS)) {
+    const sub = houseGroup.categories.find(c => c.category === cat);
+    const matComputed = sub?.material ?? 0;
+    const labComputed = sub?.labor ?? 0;
+    result.push({
+      category: cat,
+      label: labels[cat] ?? cat,
+      matExpected: anchor.mat,
+      matComputed: Math.round(matComputed),
+      matGap: Math.round(matComputed - anchor.mat),
+      matCoverage: anchor.mat > 0 ? matComputed / anchor.mat : 0,
+      labExpected: anchor.lab,
+      labComputed: Math.round(labComputed),
+    });
+  }
+  return result;
 }

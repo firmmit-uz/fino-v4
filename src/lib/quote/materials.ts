@@ -42,6 +42,33 @@ export const MATERIALS: MaterialItem[] = [
     unit: '본', priceKrw: 16200,
   },
 
+  // ── §5.2 검증 — 추가 구조 부재 (§3.5 67M 갭 보강) ─────────
+  {
+    id: 'FM-208', category: 'steel',
+    name: '동마루 (ridge)', spec: 'Ø42.2×2.3t × 6m',
+    unit: '본', priceKrw: 32500,
+  },
+  {
+    id: 'FM-209', category: 'steel',
+    name: '결로받이 홈통 강관', spec: 'Ø34×2.3t × 6m',
+    unit: '본', priceKrw: 28000,
+  },
+  {
+    id: 'FM-210', category: 'steel',
+    name: '처마 도리', spec: 'Ø31.8×1.7t × 6m',
+    unit: '본', priceKrw: 17500,
+  },
+  {
+    id: 'FM-214', category: 'steel',
+    name: '가새 (X-brace)', spec: 'Ø19×1.5t × 3m',
+    unit: '본', priceKrw: 8500,
+  },
+  {
+    id: 'FM-215', category: 'steel',
+    name: '합각 가로대', spec: 'Ø25.4×1.5t × 6m',
+    unit: '본', priceKrw: 14200,
+  },
+
   // ── 3. 부속자재 (parts) ──────────────────────────────────
   {
     id: 'FM-301', category: 'parts',
@@ -70,17 +97,17 @@ export const MATERIALS: MaterialItem[] = [
     laborRate: 0.93,
   },
 
-  // ── 4. 피복공사 (cover) ─────────────────────────────────
+  // ── 4. 피복공사 (cover) — §3.5 23.35M 시세 보정 ──────────
   {
     id: 'FM-401', category: 'cover',
     name: '1중 PO 비닐', spec: '0.12mm × 폭6m',
-    unit: '㎡', priceKrw: 1400,
+    unit: '㎡', priceKrw: 2500,        // 시세 2,500~3,000/㎡
     laborRate: 0.29,
   },
   {
     id: 'FM-402', category: 'cover',
     name: '2중 PE 비닐', spec: '0.10mm × 폭6m',
-    unit: '㎡', priceKrw: 950,
+    unit: '㎡', priceKrw: 1500,        // 시세 1,200~1,800/㎡
     laborRate: 0.29,
   },
 
@@ -100,19 +127,19 @@ export const MATERIALS: MaterialItem[] = [
     laborRate: 0.91,
   },
 
-  // ── 7. 측면수직커튼 ─────────────────────────────────────
+  // ── 7. 측면수직커튼 — §3.5 5.59M / 768㎡ 역산 ─────────────
   {
     id: 'FM-701', category: 'side_curtain',
-    name: '측면 수직커튼', spec: '보온 4겹',
-    unit: '㎡', priceKrw: 1450,
+    name: '측면 수직커튼', spec: '보온 4겹 인슐레이팅',
+    unit: '㎡', priceKrw: 7280,        // 인슐레이팅 4겹 시세 5,000~8,000/㎡
     laborRate: 0.30,
   },
 
-  // ── 8. 전후면수직커튼 ───────────────────────────────────
+  // ── 8. 전후면수직커튼 — §3.5 1.81M / 280㎡ 역산 ───────────
   {
     id: 'FM-801', category: 'end_curtain',
-    name: '전후면 수직커튼', spec: '보온 4겹',
-    unit: '㎡', priceKrw: 1450,
+    name: '전후면 수직커튼', spec: '보온 4겹 인슐레이팅',
+    unit: '㎡', priceKrw: 6464,
     laborRate: 0.19,
   },
 

@@ -67,6 +67,26 @@ describe('FIRMMIT 견적 — §5.2 강석문 베이스라인 자동 검증', () 
   });
 });
 
+describe('FIRMMIT 견적 — §3.5 카테고리 anchor 달성률', () => {
+  it('측면수직커튼·전후면수직커튼·콘트롤박스 100% 달성', async () => {
+    const { verifyCategoryAnchors } = await import('./verification.js');
+    const anchors = verifyCategoryAnchors();
+    const must100 = ['side_curtain', 'end_curtain', 'control'];
+    for (const cat of must100) {
+      const a = anchors.find(x => x.category === cat);
+      expect(a?.matCoverage, `${cat} cov`).toBeGreaterThanOrEqual(0.98);
+    }
+  });
+
+  it('전체 자재비 달성률 ≥ 70%', async () => {
+    const { verifyCategoryAnchors } = await import('./verification.js');
+    const anchors = verifyCategoryAnchors();
+    const totalE = anchors.reduce((s, a) => s + a.matExpected, 0);
+    const totalC = anchors.reduce((s, a) => s + a.matComputed, 0);
+    expect(totalC / totalE).toBeGreaterThanOrEqual(0.70);
+  });
+});
+
 describe('FIRMMIT 견적 — BOM 생성', () => {
   it('필수 카테고리가 모두 포함됨', () => {
     const q = computeQuantities(KSM_BASELINE);
