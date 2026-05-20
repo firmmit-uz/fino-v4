@@ -33,6 +33,14 @@
     sub="v2.14 standard · S1–S4"
     href="/main"
   />
+  <StatementCard
+    variant="blue"
+    gradient="linear-gradient(135deg,#1E40AF 0%,#3365FF 100%)"
+    badge="🏗️ 온실 견적"
+    title="Greenhouse Quote v2.0"
+    sub="강석문 .xlsm 포팅 · 누쿠스 2ha"
+    href="/quote"
+  />
 </div>
 
 <!-- Quick actions -->
