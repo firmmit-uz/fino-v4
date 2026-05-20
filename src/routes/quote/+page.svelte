@@ -320,6 +320,13 @@
   </button>
 </div>
 
+<div class="mt-2">
+  <button onclick={() => goto('/quote/verify')}
+    class="w-full py-2 rounded-xl bg-white border border-hairline text-ink3 text-xs font-semibold hover:bg-hairline">
+    🔬 §5.2 강석문 베이스라인 검증
+  </button>
+</div>
+
 <!-- 저장 다이얼로그 -->
 {#if showSaveDialog}
   <div role="dialog" aria-modal="true"

@@ -91,8 +91,11 @@ export interface Quantities {
   pyeong: number;        // 평
   spanCount: number;     // 동수
   columnRows: number;    // 기둥줄
-  columnsPerRow: number; // 기둥칸
-  innerColumns: number;  // 셋기둥수
+  columnsPerRow: number; // 기둥칸 (= ROUNDUP(L/pitch) + 1)
+  endFacePosts: number;  // 전후면 기둥 (gable) — §5.2 보강
+  innerColumns: number;  // 셋기둥수 (보조 기둥, 1.5m 간격)
+  mainColumnsTotal: number;   // 기둥 총수 — FM-201 BOM 수량 (§5.2: 222)
+  midRailCount: number;        // 중방 수 — FM-203 BOM 수량 (§5.2: 185)
   rafterLength: number;  // 서까래 길이 (m)
   rafterCount: number;   // 서까래 개수
   tClampCount: number;   // T크램프 개수

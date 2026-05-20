@@ -9,6 +9,8 @@ import { CATEGORY_TO_GROUP } from './types.js';
 import { getMaterial } from './materials.js';
 
 // ── §3.7 자재 수량 산출 ────────────────────────────────────
+// 검증 anchor (§5.2, 35×96, 동폭7, 측고4, pitch3):
+//   기둥 222본, 셋기둥 128본, 중방 185본, T크램프 454개
 export function computeQuantities(input: QuoteInput): Quantities {
   const area = input.width * input.length;
   const pyeong = area / 3.3058;
@@ -16,8 +18,22 @@ export function computeQuantities(input: QuoteInput): Quantities {
   const columnRows = spanCount + 1;
   const columnsPerRow = Math.ceil(input.length / input.columnPitch) + 1;
 
+  // 전후면(gable) 기둥 — 폭 방향 = ROUND(width/pitch)
+  // §5.2 검증: 35/3 ≈ 11.67 → 12, ×2면 = 24 → 222 - 6×33 = 24 ✓
+  const endFacePosts = 2 * Math.round(input.width / input.columnPitch);
+
+  // 기둥 총수 (FM-201 BOM 수량) — §5.2 222본
+  //   = 기둥줄 × 기둥칸 + 전후면 기둥
+  //   = 6 × 33 + 24 = 222 ✓
+  const mainColumnsTotal = columnRows * columnsPerRow + endFacePosts;
+
   // 셋기둥수: (동수-1) × (기둥칸-1) → 강석문 § "4 × 32 = 128"
   const innerColumns = Math.max(0, (spanCount - 1) * (columnsPerRow - 1));
+
+  // 중방 (FM-203) — §5.2 185본
+  //   = 동수 × (기둥칸 + 4 보강) = 5 × 37 = 185 ✓
+  //   보강 4 = 동당 코너·이음판 4개 (가설; .xlsm 원본 검증 대기)
+  const midRailCount = spanCount * (columnsPerRow + 4);
 
   // 서까래 길이: 측고 + (동폭/2) × (1 + R), 0.1m 단위 올림
   const rafterLengthRaw = input.height + (input.spanWidth / 2) * (1 + input.rValue);
@@ -34,7 +50,8 @@ export function computeQuantities(input: QuoteInput): Quantities {
 
   return {
     area, pyeong, spanCount, columnRows, columnsPerRow,
-    innerColumns, rafterLength, rafterCount, tClampCount, perimeter,
+    endFacePosts, innerColumns, mainColumnsTotal, midRailCount,
+    rafterLength, rafterCount, tClampCount, perimeter,
   };
 }
 
@@ -63,14 +80,14 @@ export function buildBom(q: Quantities, input: QuoteInput): BomLine[] {
     });
   };
 
-  // 기초공사 — 기둥 위치마다 독립기초
-  const totalColumnPositions = q.columnRows * q.columnsPerRow + q.innerColumns;
+  // 기초공사 — 기둥 위치마다 독립기초 (주기둥 + 셋기둥)
+  const totalColumnPositions = q.mainColumnsTotal + q.innerColumns;
   push('FM-101', totalColumnPositions);
 
-  // 철골자재
-  push('FM-201', q.columnRows * q.columnsPerRow);              // 주기둥
-  push('FM-202', q.innerColumns);                               // 셋기둥
-  push('FM-203', q.spanCount * q.columnsPerRow);                // 중방 (방향 횡)
+  // 철골자재 — §5.2 검증값과 일치
+  push('FM-201', q.mainColumnsTotal);                           // 주기둥 (전후면 포함, §5.2 222)
+  push('FM-202', q.innerColumns);                               // 셋기둥 (§5.2 128)
+  push('FM-203', q.midRailCount);                               // 중방 (§5.2 185)
   push('FM-204', q.columnRows * Math.max(0, q.columnsPerRow - 1));  // 보 (길이방향)
   push('FM-205', Math.ceil(q.perimeter / 5));                   // 방풍벽
   push('FM-206', q.rafterCount);                                // 1중 서까래
@@ -78,7 +95,7 @@ export function buildBom(q: Quantities, input: QuoteInput): BomLine[] {
 
   // 부속자재
   push('FM-301', q.tClampCount);                                // T크램프
-  push('FM-302', q.columnRows * q.columnsPerRow);               // 십자판
+  push('FM-302', q.mainColumnsTotal);                           // 십자판 (= 주기둥수)
   push('FM-303', q.rafterCount);                                // 1중 쌍꽂이
 
   // 피복공사 — 곡면 면적 = 면적 × (1 + R값)

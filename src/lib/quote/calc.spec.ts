@@ -4,6 +4,7 @@
 import { describe, it, expect } from 'vitest';
 import { computeQuantities, buildBom, calcQuote, computeCostBreakdown } from './calc.js';
 import { KSM_BASELINE, NUKUS_PRESET } from './defaults.js';
+import { verifyKsmBaseline, KSM_EXPECTED } from './verification.js';
 
 describe('FIRMMIT 견적 — 수량 산출 (§3.7)', () => {
   const q = computeQuantities(KSM_BASELINE);
@@ -38,6 +39,31 @@ describe('FIRMMIT 견적 — 수량 산출 (§3.7)', () => {
 
   it('T크램프수 = ceil(3,360 × 0.135) = 454', () => {
     expect(q.tClampCount).toBe(454);
+  });
+
+  // §5.2 신규 검증 — 기둥/중방 보강 후
+  it('주기둥 총수 (FM-201 수량) = 222', () => {
+    expect(q.mainColumnsTotal).toBe(KSM_EXPECTED.mainColumnsTotal);
+  });
+
+  it('중방 수 (FM-203 수량) = 185', () => {
+    expect(q.midRailCount).toBe(KSM_EXPECTED.midRailCount);
+  });
+
+  it('전후면 기둥 = 24 (= 2 × ROUND(35/3))', () => {
+    expect(q.endFacePosts).toBe(24);
+  });
+});
+
+describe('FIRMMIT 견적 — §5.2 강석문 베이스라인 자동 검증', () => {
+  const rows = verifyKsmBaseline();
+
+  it('수량 검증값(면적·기둥·셋기둥·중방·T크램프) 100% 일치', () => {
+    const quantityRows = rows.filter(r =>
+      !r.label.includes('서까래') && !r.label.includes('KRW')
+    );
+    const failed = quantityRows.filter(r => !r.match);
+    expect(failed, JSON.stringify(failed, null, 2)).toHaveLength(0);
   });
 });
 
